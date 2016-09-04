@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">ContatosPos</string>
     <string name="title_activity_login">Bem vindo</string>
+    <string name="title_activity_cadastro">Cadastro</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
@@ -14,4 +15,19 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+
+
+    <!-- Tela de Cadastro -->
+    <string name="prompt_cadastro_nome">Nome</string>
+    <string name="prompt_cadastro_telefone">Telefone</string>
+    <string name="prompt_cadastro_email">Email</string>
+    <string name="prompt_cadastro_senha">Senha</string>
+    <string name="prompt_cadastro_confirme">Confirme</string>
+
+    <string name="action_cadastro_sign_in">Entrar</string>
+    <string name="action_cancelar_sign_out">Cancelar</string>
+
+    <!--Menu Cadastro-->
+    <string name="action_settings">Teste</string>
+
 </resources>
