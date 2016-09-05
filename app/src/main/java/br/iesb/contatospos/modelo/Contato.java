@@ -1,15 +1,18 @@
 package br.iesb.contatospos.modelo;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by Helton on 03/09/16.
  */
 public class Contato extends RealmObject {
 
+    @PrimaryKey
+    private String email;
+
     private String nome;
     private String sobrenome;
-    private String email;
     private String senha;
 
     public String getNome() {

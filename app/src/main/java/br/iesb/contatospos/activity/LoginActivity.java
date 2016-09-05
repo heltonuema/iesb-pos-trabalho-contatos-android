@@ -3,6 +3,8 @@ package br.iesb.contatospos.activity;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -28,11 +30,19 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
 import br.iesb.contatospos.R;
+import br.iesb.contatospos.modelo.Contato;
+import br.iesb.contatospos.util.InputUtils;
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+import io.realm.RealmQuery;
+import io.realm.RealmResults;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -41,18 +51,13 @@ import static android.Manifest.permission.READ_CONTACTS;
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
+//    RealmConfiguration realmConfig;
+    Realm realm;
     /**
      * Id to identity READ_CONTACTS permission request.
      */
     private static final int REQUEST_READ_CONTACTS = 0;
-
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
-    };
+    private static final int REQUEST_CADASTRAR = 1;
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -69,8 +74,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         // Set up the login form.
+//        realmConfig = new RealmConfiguration.Builder(this).build();
+        realm = Realm.getDefaultInstance();
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
+
 
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -94,6 +102,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+    }
+
+    private void cadastrar(final String email) {
+        Intent intent = new Intent(this, CadastroActivity.class);
+
+        intent.putExtra("email", email);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        startActivity(intent);
+        finish();
     }
 
     private void populateAutoComplete() {
@@ -146,6 +164,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
+
+
         if (mAuthTask != null) {
             return;
         }
@@ -187,7 +207,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
+            mAuthTask = new UserLoginTask(email, password, mEmailView, this);
             mAuthTask.execute((Void) null);
         }
     }
@@ -300,33 +320,49 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         private final String mEmail;
         private final String mPassword;
+        private final View view;
+        private final Context context;
+        private boolean usuarioInexistente = false;
 
-        UserLoginTask(String email, String password) {
+        UserLoginTask(String email, String password, View view, Context context) {
             mEmail = email;
             mPassword = password;
+            this.view = view;
+            this.context = context;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
 
+            String pUser;
+            String pPassword;
+
+
+            Realm realm = Realm.getDefaultInstance();
+            RealmResults<Contato> results = null;
             try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
+                RealmQuery<Contato> query = realm.where(Contato.class);
 
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
+                query.equalTo("email", mEmail);
+                results = query.findAll();
+
+                if (results.size() == 0) {
+                    usuarioInexistente = true;
+                    return false;
                 }
+
+                if (results.size() != 1) {
+                    throw new RuntimeException("Email duplicado");
+                }
+
+                pPassword = results.get(0).getSenha();
+            }
+            finally {
+                realm.close();
             }
 
-            // TODO: register the new account here.
-            return true;
+            return pPassword.equals(InputUtils.geraMD5(mPassword));
         }
 
         @Override
@@ -335,7 +371,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
 
             if (success) {
+                Toast.makeText(context, "Usuario e senha corretos", Toast.LENGTH_SHORT).show();
                 finish();
+            } else if (usuarioInexistente) {
+                mEmailView.setError("Usuário inexistente");
+                cadastrar(mEmail);
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
