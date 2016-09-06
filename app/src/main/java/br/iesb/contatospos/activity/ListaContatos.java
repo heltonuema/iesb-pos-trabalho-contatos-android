@@ -25,7 +25,7 @@ public class ListaContatos extends AppCompatActivity implements  View.OnClickLis
     public void onClick(View v) {
 
         Intent it = new Intent(this, Cadastra_novo_contato.class);
-        startActivity(it);
+        startActivity (it);
 
     }
 
