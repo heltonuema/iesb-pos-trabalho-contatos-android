@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">IESB Social</string>
+    <string name="app_name">ContatosPos</string>
     <string name="title_activity_login">Bem vindo</string>
     <string name="title_activity_cadastro">Cadastro</string>
 
@@ -30,7 +30,6 @@
 
     <!--Menu Cadastro-->
     <string name="action_settings">Teste</string>
-
     <string name="title_activity_lista_contatos">ListaContatos</string>
     <string name="Nome">addnome</string>
     <string name="addnome">Nome</string>
