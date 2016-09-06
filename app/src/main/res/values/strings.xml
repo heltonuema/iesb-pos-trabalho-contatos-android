@@ -31,4 +31,15 @@
     <!--Menu Cadastro-->
     <string name="action_settings">Teste</string>
 
+    <string name="title_activity_lista_contatos">ListaContatos</string>
+    <string name="Nome">addnome</string>
+    <string name="addnome">Nome</string>
+    <string name="Telefone">addtelefone</string>
+    <string name="addtelefone">Telefone</string>
+
+    <string name="menu_salvar">Salvar</string>
+    <string name="menu_excluir">Excluir</string>
+    <string name="menu_alterar_cad">Alterar Cadastro</string>
+    <string name="menu_sair">Sair</string>
+
 </resources>
