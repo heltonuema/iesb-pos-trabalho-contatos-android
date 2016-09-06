@@ -11,6 +11,15 @@
     tools:context=".activity.LoginActivity">
 
     <!-- Login progress -->
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:padding="30dp"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/iesb_social" />
+
     <ProgressBar
         android:id="@+id/login_progress"
         style="?android:attr/progressBarStyleLarge"

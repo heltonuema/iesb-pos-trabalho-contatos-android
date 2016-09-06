@@ -2,6 +2,7 @@ package br.iesb.contatospos.modelo;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
+import io.realm.annotations.Required;
 
 /**
  * Created by Helton on 03/09/16.
@@ -14,6 +15,15 @@ public class Contato extends RealmObject {
     private String nome;
     private String sobrenome;
     private String senha;
+    private String uriFoto;
+
+    public String getUriFoto(){
+        return new String(uriFoto);
+    }
+
+    public void setUriFoto(final String uri){
+        this.uriFoto = uri;
+    }
 
     public String getNome() {
         return nome;
