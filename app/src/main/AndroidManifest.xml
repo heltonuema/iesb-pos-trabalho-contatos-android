@@ -47,10 +47,10 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".activity.ListaContatos"
+            android:name=".ListaContatos"
             android:label="@string/title_activity_lista_contatos"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".activity.Cadastra_novo_contato"></activity>
+        <activity android:name=".Cadastra_novo_contato"></activity>
     </application>
 
 </manifest>
