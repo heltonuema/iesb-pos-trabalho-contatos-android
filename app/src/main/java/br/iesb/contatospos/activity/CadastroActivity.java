@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import br.iesb.contatospos.R;
 import br.iesb.contatospos.exception.EntradaInvalidaException;
-import br.iesb.contatospos.modelo.Contato;
+import br.iesb.contatospos.modelo.Usuario;
 import br.iesb.contatospos.util.InputUtils;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -80,10 +80,10 @@ public class CadastroActivity extends AppCompatActivity {
             if (InputUtils.isSenhaValida(vSenha.getText().toString(), vEmail.getText().toString(), vSenha)) {
 
                 realm.beginTransaction();
-                Contato contatoPersistido = realm.createObject(Contato.class);
-                contatoPersistido.setEmail(vEmail.getText().toString());
-                contatoPersistido.setNome(vNome.getText().toString());
-                contatoPersistido.setSenha(InputUtils.geraMD5(vSenha.getText().toString()));
+                Usuario usuarioPersistido = realm.createObject(Usuario.class);
+                usuarioPersistido.setEmail(vEmail.getText().toString());
+                usuarioPersistido.setNome(vNome.getText().toString());
+                usuarioPersistido.setSenha(InputUtils.geraMD5(vSenha.getText().toString()));
                 realm.commitTransaction();
                 Snackbar.make(bEntrar, "Usuario cadastrado com sucesso", Snackbar.LENGTH_SHORT).show();
             }

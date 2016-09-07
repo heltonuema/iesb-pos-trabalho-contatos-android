@@ -37,7 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.iesb.contatospos.R;
-import br.iesb.contatospos.modelo.Contato;
+import br.iesb.contatospos.modelo.Usuario;
 import br.iesb.contatospos.util.InputUtils;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -340,9 +340,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
 
             Realm realm = Realm.getDefaultInstance();
-            RealmResults<Contato> results = null;
+            RealmResults<Usuario> results = null;
             try {
-                RealmQuery<Contato> query = realm.where(Contato.class);
+                RealmQuery<Usuario> query = realm.where(Usuario.class);
 
                 query.equalTo("email", mEmail);
                 results = query.findAll();

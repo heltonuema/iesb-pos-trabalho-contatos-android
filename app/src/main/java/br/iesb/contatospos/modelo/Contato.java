@@ -1,5 +1,7 @@
 package br.iesb.contatospos.modelo;
 
+import java.util.UUID;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.Required;
@@ -9,13 +11,23 @@ import io.realm.annotations.Required;
  */
 public class Contato extends RealmObject {
 
+
     @PrimaryKey
-    private String email;
+    private String id;
 
     private String nome;
-    private String sobrenome;
-    private String senha;
+
+    private String email;
+    private String telefone;
     private String uriFoto;
+
+    public void setId(final String id){
+        this.id = new String(id);
+    }
+
+    public String getId(){
+        return this.id;
+    }
 
     public String getUriFoto(){
         return new String(uriFoto);
@@ -30,15 +42,7 @@ public class Contato extends RealmObject {
     }
 
     public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getSobrenome() {
-        return sobrenome;
-    }
-
-    public void setSobrenome(String sobrenome) {
-        this.sobrenome = sobrenome;
+        this.nome = new String(nome);
     }
 
     public String getEmail() {
@@ -46,14 +50,15 @@ public class Contato extends RealmObject {
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        this.email = new String(email);
     }
 
-    public String getSenha() {
-        return senha;
+    public String getTelefone() {
+        return telefone;
     }
 
-    public void setSenha(String senha) {
-        this.senha = senha;
+    public void setTelefone(String telefone) {
+        this.telefone = new String(telefone);
     }
+
 }
