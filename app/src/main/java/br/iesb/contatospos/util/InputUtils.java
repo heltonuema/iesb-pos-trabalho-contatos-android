@@ -1,6 +1,7 @@
 package br.iesb.contatospos.util;
 
 import android.widget.AutoCompleteTextView;
+import android.widget.EditText;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -27,7 +28,7 @@ public class InputUtils {
 
     }
 
-    public static boolean isSenhaValida(final String senha, final String user, final AutoCompleteTextView inputSenha) throws EntradaInvalidaException {
+    public static boolean isSenhaValida(final String senha, final String user, final EditText inputSenha) throws EntradaInvalidaException {
 
         boolean retorno = true;
 
@@ -44,7 +45,7 @@ public class InputUtils {
         }
 
         if(!senha.matches("^(?=.*[A-Z])(?=.*[0-9])(?=.*[a-z])[A-Z0-9a-z]+$")){
-            throw new EntradaInvalidaException("Senha deve ser alfanumérica, com letras maiúsculas e minúsculas", inputSenha);
+            throw new EntradaInvalidaException("Senha deve ter números, letras maiúsculas e letras minúsculas", inputSenha);
         }
 
         return retorno;

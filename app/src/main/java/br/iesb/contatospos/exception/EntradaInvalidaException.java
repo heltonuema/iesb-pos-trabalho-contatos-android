@@ -2,13 +2,14 @@ package br.iesb.contatospos.exception;
 
 import android.view.View;
 import android.widget.AutoCompleteTextView;
+import android.widget.EditText;
 
 /**
  * Created by Helton on 06/09/16.
  */
 public class EntradaInvalidaException extends Exception {
 
-    private final AutoCompleteTextView autoCompleteTextView;
+    private final EditText autoCompleteTextView;
     public EntradaInvalidaException(final String mensagem){
         super(mensagem);
         autoCompleteTextView = null;
@@ -19,17 +20,17 @@ public class EntradaInvalidaException extends Exception {
         autoCompleteTextView = null;
     }
 
-    public EntradaInvalidaException(final String mensagem, final AutoCompleteTextView autoCompleteTextView){
+    public EntradaInvalidaException(final String mensagem, final EditText editText){
         super(mensagem);
-        this.autoCompleteTextView = autoCompleteTextView;
+        this.autoCompleteTextView = editText;
     }
 
-    public EntradaInvalidaException(final Throwable e, final AutoCompleteTextView autoCompleteTextView){
+    public EntradaInvalidaException(final Throwable e, final EditText editText){
         super(e);
-        this.autoCompleteTextView = autoCompleteTextView;
+        this.autoCompleteTextView = editText;
     }
 
-    public AutoCompleteTextView getAutoCompleteTextView(){
+    public EditText getAutoCompleteTextView(){
         return this.autoCompleteTextView;
     }
 
