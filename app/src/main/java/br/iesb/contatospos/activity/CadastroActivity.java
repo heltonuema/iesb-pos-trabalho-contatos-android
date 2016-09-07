@@ -66,18 +66,18 @@ public class CadastroActivity extends AppCompatActivity {
         Realm realm = Realm.getDefaultInstance();
         try {
             if (vSenha.getText().toString() == null || vSenha.getText().toString().isEmpty()) {
-                throw new EntradaInvalidaException("Preencha a senha");
+                throw new EntradaInvalidaException("Preencha a senha", vSenha);
             }
             if (vConfirmacao.getText().toString() == null || vConfirmacao.getText().toString().isEmpty()) {
-                throw new EntradaInvalidaException("Confirme a senha");
+                throw new EntradaInvalidaException("Confirme a senha", vConfirmacao);
             }
             if (!(vSenha.getText().toString().equals(vConfirmacao.getText().toString()))) {
-                throw new EntradaInvalidaException("As senhas nao conferem");
+                throw new EntradaInvalidaException("As senhas nao conferem", vConfirmacao);
             }
             if (vEmail.getText().toString() == null || vEmail.getText().toString().isEmpty()){
-                throw new EntradaInvalidaException("E-mail é obrigatório");
+                throw new EntradaInvalidaException("E-mail é obrigatório", vEmail);
             }
-            if (InputUtils.isSenhaValida(vSenha.getText().toString(), vEmail.getText().toString())) {
+            if (InputUtils.isSenhaValida(vSenha.getText().toString(), vEmail.getText().toString(), vSenha)) {
 
                 realm.beginTransaction();
                 Contato contatoPersistido = realm.createObject(Contato.class);
@@ -89,7 +89,11 @@ public class CadastroActivity extends AppCompatActivity {
             }
 
         } catch (EntradaInvalidaException e) {
-            Snackbar.make(bEntrar, e.getLocalizedMessage(), Snackbar.LENGTH_SHORT).show();
+            if(e.getAutoCompleteTextView() != null) {
+                e.getAutoCompleteTextView().setError(e.getLocalizedMessage());
+            }else{
+                Snackbar.make(bEntrar, e.getLocalizedMessage(), Snackbar.LENGTH_SHORT).show();
+            }
         } catch (RealmPrimaryKeyConstraintException e) {
             e.printStackTrace();
             Snackbar.make(bEntrar, e.getLocalizedMessage().replace("Value already exists:", "Usuário já existente:"), Snackbar.LENGTH_SHORT).show();
@@ -105,7 +109,7 @@ public class CadastroActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        //getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 

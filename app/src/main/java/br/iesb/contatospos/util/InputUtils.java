@@ -1,5 +1,7 @@
 package br.iesb.contatospos.util;
 
+import android.widget.AutoCompleteTextView;
+
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -17,24 +19,24 @@ public class InputUtils {
 
     }
 
-    public static boolean isSenhaValida(final String senha, final String user) throws EntradaInvalidaException {
+    public static boolean isSenhaValida(final String senha, final String user, final AutoCompleteTextView inputSenha) throws EntradaInvalidaException {
 
         boolean retorno = true;
 
         if(user != null && !user.isEmpty()){
 
             if(senha.contains(user.split("@")[0])){
-                throw new EntradaInvalidaException("Senha não deve conter nome do usuário");
+                throw new EntradaInvalidaException("Senha não deve conter nome do usuário", inputSenha);
             }
 
         }
 
         if(senha.length() < TAMANHO_MINIMO_SENHA){
-            throw new EntradaInvalidaException(String.format("Senha deve ter pelo menos %s carateres", TAMANHO_MINIMO_SENHA));
+            throw new EntradaInvalidaException(String.format("Senha deve ter pelo menos %s carateres", TAMANHO_MINIMO_SENHA),inputSenha);
         }
 
         if(!senha.matches("^(?=.*[A-Z])(?=.*[0-9])(?=.*[a-z])[A-Z0-9a-z]+$")){
-            throw new EntradaInvalidaException("Senha deve ser alfanumérica, com letras maiúsculas e minúsculas");
+            throw new EntradaInvalidaException("Senha deve ser alfanumérica, com letras maiúsculas e minúsculas", inputSenha);
         }
 
         return retorno;
