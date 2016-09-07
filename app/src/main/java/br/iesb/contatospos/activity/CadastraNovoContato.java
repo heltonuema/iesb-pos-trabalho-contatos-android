@@ -1,4 +1,4 @@
-package br.iesb.contatospos;
+package br.iesb.contatospos.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,8 +7,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.EditText;
 
+import br.iesb.contatospos.R;
 
-public class Cadastra_novo_contato extends AppCompatActivity {
+
+public class CadastraNovoContato extends AppCompatActivity {
 
     private EditText addNome;
     private EditText addTelfone;

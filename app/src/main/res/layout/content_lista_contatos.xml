@@ -9,7 +9,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="br.iesb.contatospos.ListaContatos"
+    tools:context=".activity.ListaContatos"
     tools:showIn="@layout/activity_lista_contatos"
     android:orientation="vertical">
 
@@ -25,12 +25,6 @@
             android:ems="10"
             android:id="@+id/Pequisa"
             android:layout_weight="1" />
-
-        <ImageButton
-            android:layout_width="36dp"
-            android:layout_height="30dp"
-            android:id="@+id/pesquisar_contato"
-            android:src="@android:drawable/ic_menu_search" />
 
     </LinearLayout>
 

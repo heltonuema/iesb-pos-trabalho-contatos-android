@@ -1,4 +1,4 @@
-package br.iesb.contatospos;
+package br.iesb.contatospos.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +9,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.*;
+
+import br.iesb.contatospos.R;
 
 
 public class ListaContatos extends AppCompatActivity implements  View.OnClickListener {
@@ -22,7 +24,7 @@ public class ListaContatos extends AppCompatActivity implements  View.OnClickLis
     @Override
     public void onClick(View v) {
 
-        Intent it = new Intent(this, Cadastra_novo_contato.class);
+        Intent it = new Intent(this, CadastraNovoContato.class);
         startActivity(it);
 
     }
