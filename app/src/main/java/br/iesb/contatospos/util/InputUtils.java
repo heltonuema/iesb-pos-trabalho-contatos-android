@@ -5,8 +5,16 @@ import android.widget.AutoCompleteTextView;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 
 import br.iesb.contatospos.exception.EntradaInvalidaException;
+import br.iesb.contatospos.modelo.Contato;
+import br.iesb.contatospos.modelo.Usuario;
+import io.realm.Realm;
+import io.realm.RealmList;
+import io.realm.RealmQuery;
+import io.realm.RealmResults;
 
 /**
  * Created by Helton on 03/09/16.
@@ -37,6 +45,25 @@ public class InputUtils {
 
         if(!senha.matches("^(?=.*[A-Z])(?=.*[0-9])(?=.*[a-z])[A-Z0-9a-z]+$")){
             throw new EntradaInvalidaException("Senha deve ser alfanumérica, com letras maiúsculas e minúsculas", inputSenha);
+        }
+
+        return retorno;
+    }
+
+    public static List<Contato> getContatosDaBaseDeDados(){
+
+        List<Contato> retorno = null;
+        Realm realm = Realm.getDefaultInstance();
+        RealmResults<Contato> results = null;
+
+        try{
+            RealmQuery<Contato> query = realm.where(Contato.class);
+            results = query.findAll();
+
+            retorno = new ArrayList<Contato>(results);
+
+        }finally{
+            realm.close();
         }
 
         return retorno;
