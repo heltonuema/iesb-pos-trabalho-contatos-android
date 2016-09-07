@@ -10,7 +10,7 @@ import android.widget.EditText;
 import br.iesb.contatospos.R;
 
 
-public class Cadastra_novo_contato extends AppCompatActivity {
+public class CadastraNovoContato extends AppCompatActivity {
 
     private EditText addNome;
     private EditText addTelfone;
