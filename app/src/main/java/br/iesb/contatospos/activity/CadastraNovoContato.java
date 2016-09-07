@@ -12,8 +12,9 @@ import br.iesb.contatospos.R;
 
 public class CadastraNovoContato extends AppCompatActivity {
 
-    private EditText addNome;
-    private EditText addTelfone;
+    private EditText edtNome;
+    private EditText edtTelefone;
+    private EditText edtEmail;
 
 
     @Override
@@ -23,8 +24,10 @@ public class CadastraNovoContato extends AppCompatActivity {
 
 
 
-        addNome = (EditText) findViewById(R.id.addnome);
-        addTelfone = (EditText) findViewById(R.id.addtelefone);
+        edtNome = (EditText) findViewById(R.id.edtNome);
+        edtTelefone = (EditText) findViewById(R.id.edtTelefone);
+        edtEmail = (EditText) findViewById(R.id.edtEmail);
+
     }
 
     @Override
