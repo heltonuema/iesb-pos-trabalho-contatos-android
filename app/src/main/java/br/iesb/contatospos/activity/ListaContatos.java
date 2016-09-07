@@ -7,27 +7,26 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
-
 import br.iesb.contatospos.R;
+import br.iesb.contatospos.modelo.Contato;
+import io.realm.Realm;
+import io.realm.RealmQuery;
+import io.realm.RealmResults;
 
 
 public class ListaContatos extends AppCompatActivity implements  View.OnClickListener {
 
     private FloatingActionButton add_novo_contato;
-    private ImageButton pesquisar_contato;
-    private EditText Pequisa;
-    private RecyclerView ListaContatos;
-    private ArrayAdapter<String> Listcontatos;
-
-    @Override
-    public void onClick(View v) {
-
-        Intent it = new Intent(this, CadastraNovoContato.class);
-        startActivity (it);
-
-    }
+    private EditText Pesquisa;
+    private ListView ListContatos;
+    private Realm realm;
+    private RealmResults<Contato> Contatos;
+    private ArrayAdapter<String> adpcontatos;
 
 
     @Override
@@ -37,15 +36,55 @@ public class ListaContatos extends AppCompatActivity implements  View.OnClickLis
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.add_novo_contato);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+        add_novo_contato = (FloatingActionButton)findViewById(R.id.add_novo_contato);
+        Pesquisa = (EditText)findViewById(R.id.Pesquisa);
+        ListContatos = (ListView) findViewById(R.id.ListaContatos);
+
+        add_novo_contato.setOnClickListener(this);
+      //  ListContatos.setOnItemClickListener();
+
+
+
+
+
+
+
+
             }
-        });
+
+
+    @Override
+    public void onClick(View v) {
+
+        Intent it = new Intent(this, CadastraNovoContato.class);
+        startActivity (it);
+
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_lista_contatos, menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.acao_altera_cad:
+
+                break;
+
+            case R.id.acao_sair:
+
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
 
 
 }

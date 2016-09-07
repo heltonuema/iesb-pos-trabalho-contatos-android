@@ -39,5 +39,8 @@
     <string name="menu_excluir">Excluir</string>
     <string name="menu_alterar_cad">Alterar Cadastro</string>
     <string name="menu_sair">Sair</string>
+    <string name="lnl_nome">Nome</string>
+    <string name="lbl_telefone">Telefone</string>
+    <string name="lbl_email">Email</string>
 
 </resources>

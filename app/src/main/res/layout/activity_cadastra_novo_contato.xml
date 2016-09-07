@@ -7,49 +7,85 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="br.iesb.contatospos.Cadastra_novo_contato"
+    tools:context="br.iesb.contatospos.activity.CadastraNovoContato"
     android:orientation="vertical">
+
+
+    <ImageView
+        android:id="@+id/fotocontato"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/borda"
+        android:padding="25dp"
+        android:src="@drawable/camera_icone" />
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/lnlcamponome">
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/lnlCampoNome">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:id="@+id/textView" />
+            android:id="@+id/textView"
+            android:text="@string/lnl_nome" />
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPersonName"
             android:ems="10"
-            android:id="@+id/addnome"
-            android:text="@string/addnome" />
+            android:id="@+id/edtNome"
+            android:layout_gravity="center_horizontal" />
     </LinearLayout>
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/lnltelefone">
+        android:id="@+id/lnlCampoTelefone">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:id="@+id/textView2" />
+            android:id="@+id/textView2"
+            android:text="@string/lbl_telefone" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="phone"
+                android:ems="10"
+                android:id="@+id/edtTelefone"
+                android:layout_weight="1" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/lnlCampoEmail">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/textView3"
+            android:text="@string/lbl_email" />
 
         <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="phone"
-            android:ems="10"
-            android:id="@+id/addtelefone"
-            android:text="@string/addtelefone" />
-    </LinearLayout>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:id="@+id/edtEmail"
+                android:inputType="textEmailAddress"
+                android:layout_weight="1" />
+
+        </LinearLayout>
 
 </LinearLayout>
