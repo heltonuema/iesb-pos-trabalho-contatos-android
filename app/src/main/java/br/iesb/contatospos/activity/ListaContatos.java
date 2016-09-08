@@ -19,14 +19,15 @@ import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
 
-public class ListaContatos extends AppCompatActivity implements  View.OnClickListener {
+public class ListaContatos extends AppCompatActivity implements  View.OnClickListener{
 
     private FloatingActionButton add_novo_contato;
     private EditText Pesquisa;
-    private ListView ListContatos;
     private Realm realm;
     private RealmResults<Contato> Contatos;
+    private ListView ListContatos;
     private ArrayAdapter<String> adpcontatos;
+
 
 
     @Override
@@ -38,19 +39,16 @@ public class ListaContatos extends AppCompatActivity implements  View.OnClickLis
 
         add_novo_contato = (FloatingActionButton)findViewById(R.id.add_novo_contato);
         Pesquisa = (EditText)findViewById(R.id.Pesquisa);
+
+        Contatos = realm.where(Contato.class).findAll();
         ListContatos = (ListView) findViewById(R.id.ListaContatos);
 
+
         add_novo_contato.setOnClickListener(this);
-      //  ListContatos.setOnItemClickListener();
+        ListContatos.setOnItemClickListener((AdapterView.OnItemClickListener) this);
 
 
-
-
-
-
-
-
-            }
+    }
 
 
     @Override
@@ -60,6 +58,8 @@ public class ListaContatos extends AppCompatActivity implements  View.OnClickLis
         startActivity (it);
 
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
