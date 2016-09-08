@@ -3,29 +3,29 @@ package br.iesb.contatospos.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
+
+import com.facebook.AccessToken;
+
 import br.iesb.contatospos.R;
 import br.iesb.contatospos.modelo.Contato;
 import io.realm.Realm;
-import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
 
 public class ListaContatos extends AppCompatActivity implements  View.OnClickListener{
 
-    private FloatingActionButton add_novo_contato;
-    private EditText Pesquisa;
+    private FloatingActionButton addNovoContato;
+    private EditText pesquisa;
     private Realm realm;
-    private RealmResults<Contato> Contatos;
-    private ListView ListContatos;
+    private RealmResults<Contato> contatos;
+    private ListView listContatos;
     private ArrayAdapter<String> adpcontatos;
 
 
@@ -33,19 +33,26 @@ public class ListaContatos extends AppCompatActivity implements  View.OnClickLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if(AccessToken.getCurrentAccessToken() == null){
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+        }
+
         setContentView(R.layout.activity_lista_contatos);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        add_novo_contato = (FloatingActionButton)findViewById(R.id.add_novo_contato);
-        Pesquisa = (EditText)findViewById(R.id.Pesquisa);
+        addNovoContato = (FloatingActionButton)findViewById(R.id.add_novo_contato);
 
-        Contatos = realm.where(Contato.class).findAll();
-        ListContatos = (ListView) findViewById(R.id.ListaContatos);
+        pesquisa = (EditText)findViewById(R.id.Pesquisa);
+
+        contatos = realm.where(Contato.class).findAll();
+        listContatos = (ListView) findViewById(R.id.ListaContatos);
 
 
-        add_novo_contato.setOnClickListener(this);
-        ListContatos.setOnItemClickListener((AdapterView.OnItemClickListener) this);
+        addNovoContato.setOnClickListener(this);
+        listContatos.setOnItemClickListener((AdapterView.OnItemClickListener) this);
 
 
     }
@@ -54,8 +61,10 @@ public class ListaContatos extends AppCompatActivity implements  View.OnClickLis
     @Override
     public void onClick(View v) {
 
-        Intent it = new Intent(this, CadastraNovoContato.class);
-        startActivity (it);
+        if(v.getId() == R.id.add_novo_contato) {
+            Intent it = new Intent(this, CadastraNovoContato.class);
+            startActivity(it);
+        }
 
     }
 

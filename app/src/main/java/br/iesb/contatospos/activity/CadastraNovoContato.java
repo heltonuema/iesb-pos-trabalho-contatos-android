@@ -31,6 +31,7 @@ public class CadastraNovoContato extends AppCompatActivity {
     @Override
     protected void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_cadastra_novo_contato);
 
         edtNome = (EditText) findViewById(R.id.edtNome);
@@ -59,14 +60,14 @@ public class CadastraNovoContato extends AppCompatActivity {
         switch (item.getItemId()){
             case R.id.acao1:
 
-                SalvaContato();
+                salvaContato();
                 finish();
 
                 break;
 
             case R.id.acao2:
 
-                DeletaContato();
+                deletaContato();
                 finish();
 
                 break;
@@ -84,7 +85,7 @@ public class CadastraNovoContato extends AppCompatActivity {
 
     }
 
-    private void SalvaContato() {
+    private void salvaContato() {
 
         try
         {
@@ -109,7 +110,7 @@ public class CadastraNovoContato extends AppCompatActivity {
     }
 
 
-    private void DeletaContato () {
+    private void deletaContato () {
         try
         {
             PersistirContato.excluir( contato.getId() );
