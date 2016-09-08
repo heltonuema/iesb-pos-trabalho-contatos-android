@@ -2,6 +2,7 @@ package br.iesb.contatospos.application;
 
 import android.app.Application;
 
+import com.facebook.FacebookSdk;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
@@ -15,6 +16,7 @@ public class ContatosPos extends Application{
         super.onCreate();
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder(this).deleteRealmIfMigrationNeeded().build();
         Realm.setDefaultConfiguration(realmConfiguration);
+        FacebookSdk.sdkInitialize(this);
     }
 
 }

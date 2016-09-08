@@ -2,6 +2,8 @@
     <string name="app_name">ContatosPos</string>
     <string name="title_activity_login">Bem vindo</string>
     <string name="title_activity_cadastro">Cadastro</string>
+    <string name="facebook_app_id">294144827630281</string>
+    <string name="fb_login_protocol_scheme">fb294144827630281</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
@@ -42,5 +44,9 @@
     <string name="lnl_nome">Nome</string>
     <string name="lbl_telefone">Telefone</string>
     <string name="lbl_email">Email</string>
+    <string name="usuario_inexistente">Usuario inexistente</string>
+    <string name="email_duplicado">Email duplicado</string>
+    <string name="login_facebook_cancel">Login com Facebook cancelado</string>
+    <string name="facebook_login_fail">Falha no login com Facebook</string>
 
 </resources>

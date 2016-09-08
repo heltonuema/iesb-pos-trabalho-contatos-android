@@ -103,8 +103,6 @@ public class CadastroActivity extends AppCompatActivity {
                 realm.cancelTransaction();
             }
         }
-
-
     }
 
     @Override

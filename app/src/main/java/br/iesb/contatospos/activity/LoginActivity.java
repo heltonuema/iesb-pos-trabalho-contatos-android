@@ -8,9 +8,10 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -22,7 +23,21 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.Profile;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import br.iesb.contatospos.R;
@@ -38,16 +53,7 @@ import io.realm.RealmResults;
  */
 public class LoginActivity extends AppCompatActivity { //implements LoaderCallbacks<Cursor> {
 
-//    RealmConfiguration realmConfig;
     Realm realm;
-    /**
-     * Id to identity READ_CONTACTS permission request.
-     */
-    private static final int REQUEST_READ_CONTACTS = 0;
-    private static final int REQUEST_CADASTRAR = 1;
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
     private UserLoginTask mAuthTask = null;
 
     // UI references.
@@ -55,6 +61,9 @@ public class LoginActivity extends AppCompatActivity { //implements LoaderCallba
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private LoginButton loginButtonFacebook;
+
+    private CallbackManager callbackManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +90,7 @@ public class LoginActivity extends AppCompatActivity { //implements LoaderCallba
         });
 
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        if (mEmailSignInButton == null) throw new AssertionError();
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -88,8 +98,59 @@ public class LoginActivity extends AppCompatActivity { //implements LoaderCallba
             }
         });
 
+        callbackManager = CallbackManager.Factory.create();
+        loginButtonFacebook = (LoginButton) findViewById(R.id.login_button_facebook);
+        loginButtonFacebook.setReadPermissions(Arrays.asList("email", "public_profile"));
+        loginButtonFacebook.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+
+                if (!loginResult.getAccessToken().getPermissions().contains("email")) {
+                    LoginManager.getInstance().logOut();
+                    Snackbar.make(mEmailView, "Permissão para ler endereço de e-mail é necessária", Snackbar.LENGTH_SHORT).show();
+                } else {
+                    GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
+
+                        @Override
+                        public void onCompleted(JSONObject object, GraphResponse response) {
+                            Log.i("LoginActivity", response.toString());
+                            try {
+                                mEmailView.setText(response.getJSONObject().getString("email"));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+                    });
+                    Bundle parameters = new Bundle();
+                    parameters.putString("fields", "id, name, email,gender, birthday, location");
+                    request.setParameters(parameters);
+                    request.executeAsync();
+
+                }
+
+            }
+
+            @Override
+            public void onCancel() {
+                Snackbar.make(loginButtonFacebook, getString(R.string.login_facebook_cancel), Snackbar.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+                Log.e("Facebook", error.getLocalizedMessage());
+                Snackbar.make(loginButtonFacebook, getString(R.string.facebook_login_fail), Snackbar.LENGTH_SHORT).show();
+            }
+        });
+
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
     private void cadastrar(final String email) {
@@ -104,16 +165,15 @@ public class LoginActivity extends AppCompatActivity { //implements LoaderCallba
 
     private void populateAutoComplete() {
 
-        if(realm != null)
-        {
-            if(realm.isClosed()){
+        if (realm != null) {
+            if (realm.isClosed()) {
                 realm = Realm.getDefaultInstance();
             }
 
             RealmQuery<Usuario> query = realm.where(Usuario.class);
             RealmResults<Usuario> results = query.findAll();
-            List<String> emails = new ArrayList<String>();
-            for(Usuario usuario : results){
+            List<String> emails = new ArrayList<>();
+            for (Usuario usuario : results) {
                 emails.add(usuario.getEmail());
             }
 
@@ -123,47 +183,6 @@ public class LoginActivity extends AppCompatActivity { //implements LoaderCallba
 
     }
 
-//    private boolean mayRequestContacts() {
-//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-//            return true;
-//        }
-//        if (checkSelfPermission(READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-//            return true;
-//        }
-//        if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
-//            Snackbar.make(mEmailView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
-//                    .setAction(android.R.string.ok, new View.OnClickListener() {
-//                        @Override
-//                        @TargetApi(Build.VERSION_CODES.M)
-//                        public void onClick(View v) {
-//                            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-//                        }
-//                    });
-//        } else {
-//            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-//        }
-//        return false;
-//    }
-//
-//    /**
-//     * Callback received when a permissions request has been completed.
-//     */
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-//                                           @NonNull int[] grantResults) {
-//        if (requestCode == REQUEST_READ_CONTACTS) {
-//            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                populateAutoComplete();
-//            }
-//        }
-//    }
-
-
-    /**
-     * Attempts to sign in or register the account specified by the login form.
-     * If there are form errors (invalid email, missing fields, etc.), the
-     * errors are presented and no actual login attempt is made.
-     */
     private void attemptLogin() {
 
 
@@ -184,20 +203,14 @@ public class LoginActivity extends AppCompatActivity { //implements LoaderCallba
 
 
         // Check for a valid password, if the user entered one.
-        try{
-            InputUtils.isSenhaValida(password,email,mPasswordView);
-        }catch (EntradaInvalidaException e){
+        try {
+            InputUtils.isSenhaValida(password, email, mPasswordView);
+        } catch (EntradaInvalidaException e) {
             e.getAutoCompleteTextView().setError(e.getLocalizedMessage());
             focusView = mPasswordView;
             cancel = true;
         }
-//        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-//            mPasswordView.setError(getString(R.string.error_invalid_password));
-//            focusView = mPasswordView;
-//            cancel = true;
-//        }
 
-        // Check for a valid email address.
         if (TextUtils.isEmpty(email)) {
             mEmailView.setError(getString(R.string.error_field_required));
             focusView = mEmailView;
@@ -211,18 +224,19 @@ public class LoginActivity extends AppCompatActivity { //implements LoaderCallba
         if (cancel) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
-            focusView.requestFocus();
+            if (focusView != null) {
+                focusView.requestFocus();
+            }
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password, mEmailView, this);
+            mAuthTask = new UserLoginTask(email, password, this);
             mAuthTask.execute((Void) null);
         }
     }
 
     private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
         return email.contains("@");
     }
 
@@ -262,40 +276,6 @@ public class LoginActivity extends AppCompatActivity { //implements LoaderCallba
         }
     }
 
-//    @Override
-//    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-//
-//        return new CursorLoader(this,
-//                // Retrieve data rows for the device user's 'profile' contact.
-//                Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI,
-//                        ContactsContract.Contacts.Data.CONTENT_DIRECTORY), ProfileQuery.PROJECTION,
-//
-//                // Select only email addresses.
-//                ContactsContract.Contacts.Data.MIMETYPE +
-//                        " = ?", new String[]{ContactsContract.CommonDataKinds.Email
-//                .CONTENT_ITEM_TYPE},
-//
-//                // Show primary email addresses first. Note that there won't be
-//                // a primary email address if the user hasn't specified one.
-//                ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
-//    }
-//
-//    @Override
-//    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-//        List<String> emails = new ArrayList<>();
-//        cursor.moveToFirst();
-//        while (!cursor.isAfterLast()) {
-//            emails.add(cursor.getString(ProfileQuery.ADDRESS));
-//            cursor.moveToNext();
-//        }
-//
-//        addEmailsToAutoComplete(emails);
-//    }
-//
-//    @Override
-//    public void onLoaderReset(Loader<Cursor> cursorLoader) {
-//
-//    }
 
     private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
         //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
@@ -306,17 +286,6 @@ public class LoginActivity extends AppCompatActivity { //implements LoaderCallba
         mEmailView.setAdapter(adapter);
     }
 
-
-    private interface ProfileQuery {
-        String[] PROJECTION = {
-                ContactsContract.CommonDataKinds.Email.ADDRESS,
-                ContactsContract.CommonDataKinds.Email.IS_PRIMARY,
-        };
-
-        int ADDRESS = 0;
-        int IS_PRIMARY = 1;
-    }
-
     /**
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
@@ -325,32 +294,23 @@ public class LoginActivity extends AppCompatActivity { //implements LoaderCallba
 
         private final String mEmail;
         private final String mPassword;
-        private final View view;
         private final Context context;
         private boolean usuarioInexistente = false;
 
-        UserLoginTask(String email, String password, View view, Context context) {
+        UserLoginTask(String email, String password, Context context) {
             mEmail = email;
             mPassword = password;
-            this.view = view;
             this.context = context;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
 
-            String pUser;
-            String pPassword;
-
-
-            Realm realm = Realm.getDefaultInstance();
-            RealmResults<Usuario> results = null;
-            try {
+            try (Realm realm = Realm.getDefaultInstance()) {
                 RealmQuery<Usuario> query = realm.where(Usuario.class);
 
                 query.equalTo("email", mEmail);
-                results = query.findAll();
+                RealmResults<Usuario> results = query.findAll();
 
                 if (results.size() == 0) {
                     usuarioInexistente = true;
@@ -358,16 +318,15 @@ public class LoginActivity extends AppCompatActivity { //implements LoaderCallba
                 }
 
                 if (results.size() != 1) {
-                    throw new RuntimeException("Email duplicado");
+                    throw new RuntimeException(getString(R.string.email_duplicado));
                 }
 
-                pPassword = results.get(0).getSenha();
+                String pPassword = results.get(0).getSenha();
+                if (pPassword != null) {
+                    return pPassword.equals(InputUtils.geraMD5(mPassword));
+                }
             }
-            finally {
-                realm.close();
-            }
-
-            return pPassword.equals(InputUtils.geraMD5(mPassword));
+            return false;
         }
 
         @Override
@@ -379,7 +338,7 @@ public class LoginActivity extends AppCompatActivity { //implements LoaderCallba
                 Toast.makeText(context, "Usuario e senha corretos", Toast.LENGTH_SHORT).show();
                 finish();
             } else if (usuarioInexistente) {
-                mEmailView.setError("Usuário inexistente");
+                mEmailView.setError(getString(R.string.usuario_inexistente));
                 cadastrar(mEmail);
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
