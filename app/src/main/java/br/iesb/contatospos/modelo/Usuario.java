@@ -6,7 +6,7 @@ import io.realm.annotations.PrimaryKey;
 /**
  * Created by Helton on 07/09/16.
  */
-public class Usuario extends RealmObject {
+public class Usuario extends RealmObject implements IUsuario{
 
     @PrimaryKey
     private String email;
@@ -16,8 +16,21 @@ public class Usuario extends RealmObject {
     private String senha;
     private String uriFoto;
 
+    @Override
+    public String getFacebookId() {
+        return facebookId;
+    }
+
+    public void setFacebookId(String facebookId) {
+        this.facebookId = facebookId;
+    }
+
+    private String facebookId;
+
+
+
     public String getUriFoto(){
-        return new String(uriFoto);
+        return uriFoto;
     }
 
     public void setUriFoto(final String uri){

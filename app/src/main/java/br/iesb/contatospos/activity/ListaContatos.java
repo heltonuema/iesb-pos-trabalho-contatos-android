@@ -37,14 +37,17 @@ public class ListaContatos extends AppCompatActivity implements  View.OnClickLis
 
         if(ContatosPos.getUsuarioLogado() == null){
             Intent intent = new Intent(this, LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(intent);
+            finish();
+            return;
         }
 
+        realm = Realm.getDefaultInstance();
         setContentView(R.layout.activity_lista_contatos);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        addNovoContato = (FloatingActionButton)findViewById(R.id.add_novo_contato);
+        addNovoContato = (FloatingActionButton)findViewById(R.id.fab);
 
         pesquisa = (EditText)findViewById(R.id.Pesquisa);
 
@@ -53,7 +56,7 @@ public class ListaContatos extends AppCompatActivity implements  View.OnClickLis
 
 
         addNovoContato.setOnClickListener(this);
-        listContatos.setOnItemClickListener((AdapterView.OnItemClickListener) this);
+        //listContatos.setOnItemClickListener((AdapterView.OnItemClickListener) this);
 
 
     }
@@ -62,7 +65,7 @@ public class ListaContatos extends AppCompatActivity implements  View.OnClickLis
     @Override
     public void onClick(View v) {
 
-        if(v.getId() == R.id.add_novo_contato) {
+        if(v.getId() == R.id.fab) {
             Intent it = new Intent(this, CadastraNovoContato.class);
             startActivity(it);
         }
@@ -89,7 +92,9 @@ public class ListaContatos extends AppCompatActivity implements  View.OnClickLis
 
             case R.id.acao_sair:
 
-                break;
+                ContatosPos.logout();
+                finish();
+                System.exit(0);
         }
 
         return super.onOptionsItemSelected(item);

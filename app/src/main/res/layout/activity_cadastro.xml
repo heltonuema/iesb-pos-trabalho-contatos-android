@@ -21,113 +21,115 @@
         android:padding="25dp"
         android:src="@drawable/camera_icone" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingTop="@dimen/activity_vertical_margin">
-
-        <android.support.design.widget.TextInputLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <AutoCompleteTextView
-                android:id="@+id/cadastroEmail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/prompt_cadastro_email"
-                android:inputType="textEmailAddress"
-                android:maxLines="1"
-                android:singleLine="true" />
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <AutoCompleteTextView
-                android:id="@+id/cadastroNome"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/prompt_cadastro_nome"
-                android:maxLines="1"
-                android:singleLine="true" />
-        </android.support.design.widget.TextInputLayout>
-
-        <ProgressBar
-            android:id="@+id/login_progress"
-            style="?android:attr/progressBarStyleLarge"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:visibility="gone" />
+            android:orientation="vertical"
+            android:paddingTop="@dimen/activity_vertical_margin">
 
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <AutoCompleteTextView
-                android:id="@+id/cadastroTelefone"
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/prompt_cadastro_telefone"
-                android:maxLines="1"
-                android:singleLine="true" />
+                android:layout_height="wrap_content">
 
-        </android.support.design.widget.TextInputLayout>
+                <AutoCompleteTextView
 
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+                    android:id="@+id/cadastroEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prompt_cadastro_email"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1"
+                    android:singleLine="true" />
+            </android.support.design.widget.TextInputLayout>
 
-            <AutoCompleteTextView
-                android:id="@+id/cadastroSenha"
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <AutoCompleteTextView
+                    android:id="@+id/cadastroNome"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prompt_cadastro_nome"
+                    android:maxLines="1"
+                    android:singleLine="true" />
+            </android.support.design.widget.TextInputLayout>
+
+            <ProgressBar
+                android:id="@+id/login_progress"
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:hint="@string/prompt_cadastro_senha"
-                android:inputType="textPassword"
-                android:maxLines="1"
-                android:singleLine="true" />
-        </android.support.design.widget.TextInputLayout>
+                android:layout_marginBottom="8dp"
+                android:visibility="gone" />
 
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <AutoCompleteTextView
-                android:id="@+id/cadastroConfirmaSenha"
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:hint="@string/prompt_cadastro_confirme"
-                android:inputType="textPassword"
-                android:maxLines="1"
-                android:singleLine="true" />
-        </android.support.design.widget.TextInputLayout>
+                android:layout_height="wrap_content">
 
-    </LinearLayout>
+                <AutoCompleteTextView
+                    android:id="@+id/cadastroTelefone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prompt_cadastro_telefone"
+                    android:maxLines="1"
+                    android:singleLine="true" />
 
-    <FrameLayout
-        android:layout_width="299dp"
-        android:layout_height="wrap_content"
-        android:paddingTop="@dimen/activity_vertical_margin">
+            </android.support.design.widget.TextInputLayout>
 
-        <Button
-            android:id="@+id/cadastroBtnCancelar"
-            android:layout_width="137dp"
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <AutoCompleteTextView
+                    android:id="@+id/cadastroSenha"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:hint="@string/prompt_cadastro_senha"
+                    android:inputType="textPassword"
+                    android:maxLines="1"
+                    android:singleLine="true" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <AutoCompleteTextView
+                    android:id="@+id/cadastroConfirmaSenha"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:hint="@string/prompt_cadastro_confirme"
+                    android:inputType="textPassword"
+                    android:maxLines="1"
+                    android:singleLine="true" />
+            </android.support.design.widget.TextInputLayout>
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="299dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="left|center_vertical"
-            android:text="@string/action_cancelar_sign_out" />
+            android:paddingTop="@dimen/activity_vertical_margin">
 
-        <Button
-            android:id="@+id/cadastroBtnEntrar"
-            android:layout_width="137dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right|center_vertical"
-            android:backgroundTint="@color/colorAccent"
-            android:text="@string/action_cadastro_sign_in"
-            android:textColor="#FFFFFF" />
-    </FrameLayout>
+            <Button
+                android:id="@+id/cadastroBtnCancelar"
+                android:layout_width="137dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|center_vertical"
+                android:text="@string/action_cancelar_sign_out" />
+
+            <Button
+                android:id="@+id/cadastroBtnEntrar"
+                android:layout_width="137dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|center_vertical"
+                android:backgroundTint="@color/colorAccent"
+                android:text="@string/action_cadastro_sign_in"
+                android:textColor="#FFFFFF" />
+        </FrameLayout>
+
 
 </LinearLayout>
