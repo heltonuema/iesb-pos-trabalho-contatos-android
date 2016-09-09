@@ -4,14 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
-
-import com.facebook.AccessToken;
 
 import br.iesb.contatospos.R;
 import br.iesb.contatospos.application.ContatosPos;
@@ -67,7 +64,7 @@ public class ListaContatosActivity extends AppCompatActivity implements  View.On
     public void onClick(View v) {
 
         if(v.getId() == R.id.fab) {
-            Intent it = new Intent(this, CadastraNovoContato.class);
+            Intent it = new Intent(this, CadastroContatoActivity.class);
             startActivity(it);
         }
 

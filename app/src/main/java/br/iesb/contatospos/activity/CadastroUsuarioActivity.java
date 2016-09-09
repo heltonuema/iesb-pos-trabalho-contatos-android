@@ -21,7 +21,7 @@ import io.realm.exceptions.RealmPrimaryKeyConstraintException;
 /**
  * Tela de Cadastro
  */
-public class CadastroActivity extends AppCompatActivity {
+public class CadastroUsuarioActivity extends AppCompatActivity {
 
     private AutoCompleteTextView vEmail;
     private AutoCompleteTextView vNome;

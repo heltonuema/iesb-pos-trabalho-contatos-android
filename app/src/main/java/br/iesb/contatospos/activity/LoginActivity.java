@@ -3,7 +3,6 @@ package br.iesb.contatospos.activity;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -22,20 +21,13 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
-import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
-import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -75,7 +67,7 @@ public class LoginActivity extends AppCompatActivity { //implements LoaderCallba
         // Set up the login form.
 //        realmConfig = new RealmConfiguration.Builder(this).build();
         if(ContatosPos.getUsuarioLogado() != null){
-            goToActivity(ListaContatos.class, null);
+            goToActivity(ListaContatosActivity.class, null);
         }
         realm = Realm.getDefaultInstance();
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
@@ -117,7 +109,7 @@ public class LoginActivity extends AppCompatActivity { //implements LoaderCallba
                     Snackbar.make(mEmailView, "Permissão para ler endereço de e-mail é necessária", Snackbar.LENGTH_SHORT).show();
                 } else {
                     ContatosPos.getCredentials();
-                    goToActivity(ListaContatos.class, null);
+                    goToActivity(ListaContatosActivity.class, null);
                 }
 
             }
@@ -166,7 +158,7 @@ public class LoginActivity extends AppCompatActivity { //implements LoaderCallba
 
     private void cadastrar(final String email) {
 
-        goToActivity(CadastroActivity.class, "email,".concat(email));
+        goToActivity(CadastroUsuarioActivity.class, "email,".concat(email));
 //
     }
 
@@ -348,7 +340,7 @@ public class LoginActivity extends AppCompatActivity { //implements LoaderCallba
             if (success) {
                 ContatosPos.setUsuarioLogado(usuarioLogado);
                 Snackbar.make(mPasswordView, String.format("Fez login como %s", usuarioLogado.getEmail()), Snackbar.LENGTH_SHORT).show();
-                goToActivity(ListaContatos.class);
+                goToActivity(ListaContatosActivity.class);
                 finish();
             } else if (usuarioInexistente) {
                 mEmailView.setError(getString(R.string.usuario_inexistente));

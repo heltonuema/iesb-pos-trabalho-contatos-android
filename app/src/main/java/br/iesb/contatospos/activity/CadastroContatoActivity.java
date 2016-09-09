@@ -14,7 +14,7 @@ import br.iesb.contatospos.dao.ContatoDAO;
 import br.iesb.contatospos.modelo.Contato;
 
 
-public class CadastraNovoContato extends AppCompatActivity {
+public class CadastroContatoActivity extends AppCompatActivity {
 
     private EditText edtNome;
     private EditText edtTelefone;
