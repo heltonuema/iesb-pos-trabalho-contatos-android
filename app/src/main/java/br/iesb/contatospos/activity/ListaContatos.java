@@ -49,6 +49,7 @@ public class ListaContatos extends AppCompatActivity implements  View.OnClickLis
 
         addNovoContato = (FloatingActionButton)findViewById(R.id.fab);
 
+
         pesquisa = (EditText)findViewById(R.id.Pesquisa);
 
         contatos = realm.where(Contato.class).findAll();
