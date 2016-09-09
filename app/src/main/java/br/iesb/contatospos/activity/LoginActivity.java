@@ -109,23 +109,7 @@ public class LoginActivity extends AppCompatActivity { //implements LoaderCallba
                     LoginManager.getInstance().logOut();
                     Snackbar.make(mEmailView, "Permissão para ler endereço de e-mail é necessária", Snackbar.LENGTH_SHORT).show();
                 } else {
-                    GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
 
-                        @Override
-                        public void onCompleted(JSONObject object, GraphResponse response) {
-                            Log.i("LoginActivity", response.toString());
-                            try {
-                                mEmailView.setText(response.getJSONObject().getString("email"));
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-
-                        }
-                    });
-                    Bundle parameters = new Bundle();
-                    parameters.putString("fields", "id, name, email,gender, birthday, location");
-                    request.setParameters(parameters);
-                    request.executeAsync();
 
                 }
 

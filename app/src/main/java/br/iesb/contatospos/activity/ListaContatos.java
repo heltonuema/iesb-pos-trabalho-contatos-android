@@ -14,6 +14,7 @@ import android.widget.*;
 import com.facebook.AccessToken;
 
 import br.iesb.contatospos.R;
+import br.iesb.contatospos.application.ContatosPos;
 import br.iesb.contatospos.modelo.Contato;
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -34,7 +35,7 @@ public class ListaContatos extends AppCompatActivity implements  View.OnClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(AccessToken.getCurrentAccessToken() == null){
+        if(ContatosPos.getUsuarioLogado() == null){
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
         }

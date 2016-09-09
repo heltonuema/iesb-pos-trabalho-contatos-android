@@ -1,15 +1,25 @@
-package br.iesb.contatospos.modelo;
+package br.iesb.contatospos.dao;
 
+import br.iesb.contatospos.modelo.Contato;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.exceptions.RealmPrimaryKeyConstraintException;
 import android.content.ContentValues;
 import android.content.Context;
 
+import java.io.Closeable;
+import java.io.IOException;
+
 /**
  * Created by Andre on 08/09/2016.
  */
-public class PersistirContato {
+public class ContatoDAO implements Closeable{
+
+    private Realm realm;
+
+    public ContatoDAO(final Contato contato){
+
+    }
 
     private ContentValues preencheContentValues(Contato contato)
     {
@@ -36,6 +46,11 @@ public class PersistirContato {
 
     public static void inserir(Contato contato)
     {
+
+    }
+
+    @Override
+    public void close() throws IOException {
 
     }
 

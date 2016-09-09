@@ -8,15 +8,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import br.iesb.contatospos.R;
-import br.iesb.contatospos.modelo.PersistirContato;
+import br.iesb.contatospos.dao.ContatoDAO;
 import br.iesb.contatospos.modelo.Contato;
-import br.iesb.contatospos.modelo.PersistirContato;
-import br.iesb.contatospos.util.InputUtils;
-import io.realm.Realm;
-
 
 
 public class CadastraNovoContato extends AppCompatActivity {
@@ -95,9 +90,9 @@ public class CadastraNovoContato extends AppCompatActivity {
             contato.setEmail(edtEmail.getText().toString());
 
             if (contato.getId() == null)
-                PersistirContato.inserir(contato);
+                ContatoDAO.inserir(contato);
             else
-                PersistirContato.alterar(contato);
+                ContatoDAO.alterar(contato);
 
         }catch(Exception ex)
         {
@@ -113,7 +108,7 @@ public class CadastraNovoContato extends AppCompatActivity {
     private void deletaContato () {
         try
         {
-            PersistirContato.excluir( contato.getId() );
+            ContatoDAO.excluir( contato.getId() );
 
         }catch(Exception ex)
         {
