@@ -20,7 +20,7 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 
 
-public class ListaContatos extends AppCompatActivity implements  View.OnClickListener{
+public class ListaContatosActivity extends AppCompatActivity implements  View.OnClickListener{
 
     private FloatingActionButton addNovoContato;
     private EditText pesquisa;
