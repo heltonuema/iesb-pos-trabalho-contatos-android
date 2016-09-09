@@ -9,7 +9,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:weightSum="1"
-    tools:context="br.iesb.contatospos.activity.CadastroActivity">
+    tools:context=".activity.CadastroUsuarioActivity">
 
     <!-- Login progress -->
     <ImageView
@@ -20,6 +20,11 @@
         android:background="@drawable/borda"
         android:padding="25dp"
         android:src="@drawable/camera_icone" />
+
+    <ScrollView
+        android:id="@+id/cad_usuario_form"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -108,7 +113,7 @@
             </android.support.design.widget.TextInputLayout>
 
         </LinearLayout>
-
+    </ScrollView>
         <FrameLayout
             android:layout_width="299dp"
             android:layout_height="wrap_content"

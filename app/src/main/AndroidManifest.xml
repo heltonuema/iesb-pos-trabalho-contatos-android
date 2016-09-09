@@ -43,11 +43,11 @@
             android:label="@string/app_name" />
 
         <activity
-            android:name=".activity.CadastroActivity"
+            android:name=".activity.CadastroUsuarioActivity"
             android:label="@string/title_activity_cadastro"/>
 
         <activity
-            android:name=".activity.ListaContatos"
+            android:name=".activity.ListaContatosActivity"
             android:label="IESB Social"
             android:screenOrientation="portrait">
             <intent-filter>
