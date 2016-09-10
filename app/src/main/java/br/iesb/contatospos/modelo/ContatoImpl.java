@@ -1,18 +1,10 @@
 package br.iesb.contatospos.modelo;
 
-import java.util.UUID;
-
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
-import io.realm.annotations.Required;
-
 /**
- * Created by Helton on 03/09/16.
+ * Created by andre on 09/09/2016.
  */
-public class Contato extends RealmObject implements IContato {
+public class ContatoImpl implements IContato {
 
-
-    @PrimaryKey
     private String id;
 
     private String nome;
@@ -20,6 +12,14 @@ public class Contato extends RealmObject implements IContato {
     private String email;
     private String telefone;
     private String uriFoto;
+
+    public ContatoImpl (final IContato contato){
+
+        this.nome = contato.getNome();
+        this.email = contato.getEmail();
+        this.telefone = contato.getTelefone();
+        this.uriFoto = contato.getUriFoto();
+    }
 
     public void setId(final String id){
         this.id = new String(id);
@@ -60,5 +60,12 @@ public class Contato extends RealmObject implements IContato {
     public void setTelefone(String telefone) {
         this.telefone = new String(telefone);
     }
+
+
+
+
+
+
+
 
 }

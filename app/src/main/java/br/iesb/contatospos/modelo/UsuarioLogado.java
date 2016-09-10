@@ -22,7 +22,7 @@ public class UsuarioLogado  implements IUsuario{
 
     private String facebookId;
 
-    public UsuarioLogado(final Usuario usuario){
+    public UsuarioLogado(final IUsuario usuario){
         this.setNome(usuario.getNome());
         this.setEmail(usuario.getEmail());
         this.setSobrenome(usuario.getSobrenome());
