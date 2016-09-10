@@ -5,6 +5,13 @@
     >
 
     <item
+        android:id="@+id/lista_menu_search"
+        android:title="Pesquisar nos contatos"
+        android:icon="@drawable/ic_action_pesquisa_contatos"
+        android:orderInCategory="100"
+        app:showAsAction="always"/>
+
+    <item
         android:id="@+id/acao_altera_cad"
         android:title="@string/menu_alterar_cad"
         android:orderInCategory="100"
