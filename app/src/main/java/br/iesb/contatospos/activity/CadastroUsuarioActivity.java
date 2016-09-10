@@ -6,9 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.Toast;
 
 import br.iesb.contatospos.R;
@@ -16,7 +14,6 @@ import br.iesb.contatospos.exception.EntradaInvalidaException;
 import br.iesb.contatospos.modelo.Usuario;
 import br.iesb.contatospos.util.InputUtils;
 import io.realm.Realm;
-import io.realm.RealmConfiguration;
 import io.realm.exceptions.RealmPrimaryKeyConstraintException;
 
 /**
@@ -33,7 +30,7 @@ public class CadastroUsuarioActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_cadastro);
+        setContentView(R.layout.activity_cadastro_usuario);
 
 
         vEmail = (AutoCompleteTextView) findViewById(R.id.cadastroEmail);
