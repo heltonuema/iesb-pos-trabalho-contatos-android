@@ -3,6 +3,7 @@ package br.iesb.contatospos.activity;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,8 +29,6 @@ public class CadastroUsuarioActivity extends AppCompatActivity {
     private AutoCompleteTextView vSenha;
     private AutoCompleteTextView vConfirmacao;
     private AutoCompleteTextView vTelefone;
-    private Button bEntrar;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +41,21 @@ public class CadastroUsuarioActivity extends AppCompatActivity {
         vSenha = (AutoCompleteTextView) findViewById(R.id.cadastroSenha);
         vConfirmacao = (AutoCompleteTextView) findViewById(R.id.cadastroConfirmaSenha);
         vTelefone = (AutoCompleteTextView) findViewById(R.id.cadastroTelefone);
-        bEntrar = (Button) findViewById(R.id.cadastroBtnEntrar);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarCadUsuario);
+        toolbar.inflateMenu(R.menu.menu_tb_cadastro_usuario);
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+
+                switch(item.getItemId()){
+                    case R.id.cadastrarUsuarioTB:
+                        cadastrar();
+                }
+
+                return true;
+            }
+        });
 
         vEmail.requestFocus();
 
@@ -51,13 +64,6 @@ public class CadastroUsuarioActivity extends AppCompatActivity {
             vEmail.setText(emailRecebido);
             vNome.requestFocus();
         }
-
-        bEntrar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                cadastrar();
-            }
-        });
 
     }
 
@@ -85,18 +91,18 @@ public class CadastroUsuarioActivity extends AppCompatActivity {
                 usuarioPersistido.setNome(vNome.getText().toString());
                 usuarioPersistido.setSenha(InputUtils.geraMD5(vSenha.getText().toString()));
                 realm.commitTransaction();
-                Snackbar.make(bEntrar, "Usuario cadastrado com sucesso", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(vEmail, "Usuario cadastrado com sucesso", Snackbar.LENGTH_SHORT).show();
             }
 
         } catch (EntradaInvalidaException e) {
             if(e.getAutoCompleteTextView() != null) {
                 e.getAutoCompleteTextView().setError(e.getLocalizedMessage());
             }else{
-                Snackbar.make(bEntrar, e.getLocalizedMessage(), Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(vEmail, e.getLocalizedMessage(), Snackbar.LENGTH_SHORT).show();
             }
         } catch (RealmPrimaryKeyConstraintException e) {
             e.printStackTrace();
-            Snackbar.make(bEntrar, e.getLocalizedMessage().replace("Value already exists:", "Usuário já existente:"), Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(vEmail, e.getLocalizedMessage().replace("Value already exists:", "Usuário já existente:"), Snackbar.LENGTH_SHORT).show();
         } finally{
             if(realm.isInTransaction()) {
                 Toast.makeText(this, "Cancelando transação", Toast.LENGTH_SHORT).show();

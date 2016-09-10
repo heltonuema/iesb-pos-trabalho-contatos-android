@@ -31,6 +31,7 @@ import com.facebook.login.widget.LoginButton;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import br.iesb.contatospos.R;
@@ -66,6 +67,7 @@ public class LoginActivity extends AppCompatActivity { //implements LoaderCallba
         setContentView(R.layout.activity_login);
         // Set up the login form.
 //        realmConfig = new RealmConfiguration.Builder(this).build();
+
         if(ContatosPos.getUsuarioLogado() != null){
             goToActivity(ListaContatosActivity.class, null);
         }

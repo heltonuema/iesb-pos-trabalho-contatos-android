@@ -1,14 +1,20 @@
 package br.iesb.contatospos.activity;
 
 import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.*;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import br.iesb.contatospos.R;
 import br.iesb.contatospos.application.ContatosPos;
@@ -17,22 +23,22 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 
 
-public class ListaContatosActivity extends AppCompatActivity implements  View.OnClickListener{
+public class ListaContatosActivity extends AppCompatActivity implements View.OnClickListener {
 
     private FloatingActionButton addNovoContato;
-    private EditText pesquisa;
+//    private EditText pesquisa;
     private Realm realm;
     private RealmResults<Contato> contatos;
     private ListView listContatos;
     private ArrayAdapter<String> adpcontatos;
-
-
+    private EditText searchField;
+    private ImageView searchIcon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(ContatosPos.getUsuarioLogado() == null){
+        if (ContatosPos.getUsuarioLogado() == null) {
             Intent intent = new Intent(this, LoginActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
@@ -41,12 +47,31 @@ public class ListaContatosActivity extends AppCompatActivity implements  View.On
             return;
         }
 
+
+        searchIcon = (ImageView) findViewById(R.id.lista_search_icon);
+        searchField = (EditText) findViewById(R.id.search_field_lista);
+
+        if(searchIcon == null){
+            Toast.makeText(this, "Search icon null", Toast.LENGTH_SHORT).show();
+        }
+
+//        searchIcon.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (searchField.getVisibility() == View.VISIBLE) {
+//                    searchField.setVisibility(View.INVISIBLE);
+//                } else {
+//                    searchField.setVisibility(View.VISIBLE);
+//                }
+//            }
+//        });
+
         realm = Realm.getDefaultInstance();
         setContentView(R.layout.activity_lista_contatos);
 
-        addNovoContato = (FloatingActionButton)findViewById(R.id.addcontato);
+        addNovoContato = (FloatingActionButton) findViewById(R.id.addcontato);
 
-        pesquisa = (EditText)findViewById(R.id.Pesquisa);
+//        pesquisa = (EditText) findViewById(R.id.Pesquisa);
         contatos = realm.where(Contato.class).findAll();
         listContatos = (ListView) findViewById(R.id.ListaContatos);
 
@@ -61,11 +86,10 @@ public class ListaContatosActivity extends AppCompatActivity implements  View.On
     @Override
     public void onClick(View v) {
 
-            Intent it = new Intent(this, CadastroContatoActivity.class);
-            startActivity(it);
+        Intent it = new Intent(this, CadastroContatoActivity.class);
+        startActivity(it);
 
     }
-
 
 
     @Override
@@ -76,10 +100,11 @@ public class ListaContatosActivity extends AppCompatActivity implements  View.On
 
         return super.onCreateOptionsMenu(menu);
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.acao_altera_cad:
 
                 break;
@@ -93,7 +118,6 @@ public class ListaContatosActivity extends AppCompatActivity implements  View.On
 
         return super.onOptionsItemSelected(item);
     }
-
 
 
 }

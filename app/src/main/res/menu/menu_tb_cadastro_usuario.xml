@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".activity.CadastroUsuarioActivity"
+    >
+
+    <item
+        android:id="@+id/cadastrarUsuarioTB"
+        android:icon="@android:drawable/ic_menu_send"
+        android:title="Cadastrar"
+        android:orderInCategory="100"
+        app:showAsAction="always"
+        android:visible="true"/>
+
+</menu>
