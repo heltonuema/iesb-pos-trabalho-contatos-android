@@ -44,11 +44,11 @@
 
         <activity
             android:name=".activity.CadastroUsuarioActivity"
-            android:windowSoftInputMode="stateUnspecified"
             android:label="@string/title_activity_cadastro"/>
 
         <activity
             android:name=".activity.ListaContatosActivity"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"
             android:label="IESB Social"
             android:screenOrientation="portrait">
         </activity>

@@ -48,8 +48,8 @@ public class ListaContatosActivity extends AppCompatActivity implements View.OnC
         }
 
 
-        searchIcon = (ImageView) findViewById(R.id.lista_search_icon);
-        searchField = (EditText) findViewById(R.id.search_field_lista);
+        searchIcon = (ImageView) findViewById(R.id.imv_tb_search);
+        searchField = (EditText) findViewById(R.id.edt_tb_search);
 
         if(searchIcon == null){
             Toast.makeText(this, "Search icon null", Toast.LENGTH_SHORT).show();
