@@ -8,6 +8,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ImageView;
+import br.iesb.contatospos.modelo.IContato;
 
 import br.iesb.contatospos.R;
 import br.iesb.contatospos.dao.ContatoDAO;
@@ -20,7 +21,7 @@ public class CadastroContatoActivity extends AppCompatActivity {
     private EditText edtTelefone;
     private EditText edtEmail;
     private ImageView fotoContato;
-    private Contato contato;
+    private IContato contato;
 
 
     @Override
@@ -43,7 +44,7 @@ public class CadastroContatoActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_add_novo_contato, menu);
 
-        if (contato.getId() != null)
+        if (contato != null)
             menu.getItem(1).setVisible(true);
 
         return super.onCreateOptionsMenu(menu);
@@ -89,10 +90,10 @@ public class CadastroContatoActivity extends AppCompatActivity {
             contato.setTelefone(edtTelefone.getText().toString());
             contato.setEmail(edtEmail.getText().toString());
 
-            if (contato.getId() == null)
-                ContatoDAO.inserir(contato);
-            else
-                ContatoDAO.alterar(contato);
+          //  if (contato == null)
+         //       ContatoDAO.inserir(contato);
+          //  else
+         //       ContatoDAO.alterar(contato);
 
         }catch(Exception ex)
         {
@@ -108,7 +109,7 @@ public class CadastroContatoActivity extends AppCompatActivity {
     private void deletaContato () {
         try
         {
-            ContatoDAO.excluir( contato.getId() );
+     //       ContatoDAO.excluir( contato );
 
         }catch(Exception ex)
         {

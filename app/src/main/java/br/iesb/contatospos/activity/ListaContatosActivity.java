@@ -44,11 +44,9 @@ public class ListaContatosActivity extends AppCompatActivity implements  View.On
         realm = Realm.getDefaultInstance();
         setContentView(R.layout.activity_lista_contatos);
 
-        addNovoContato = (FloatingActionButton)findViewById(R.id.fab);
-
+        addNovoContato = (FloatingActionButton)findViewById(R.id.addcontato);
 
         pesquisa = (EditText)findViewById(R.id.Pesquisa);
-
         contatos = realm.where(Contato.class).findAll();
         listContatos = (ListView) findViewById(R.id.ListaContatos);
 
@@ -63,10 +61,8 @@ public class ListaContatosActivity extends AppCompatActivity implements  View.On
     @Override
     public void onClick(View v) {
 
-        if(v.getId() == R.id.fab) {
             Intent it = new Intent(this, CadastroContatoActivity.class);
             startActivity(it);
-        }
 
     }
 
