@@ -5,16 +5,10 @@
    >
 
     <item
-        android:id="@+id/acao1"
+        android:id="@+id/menuContatoSalvar"
         android:title="@string/menu_salvar"
+        android:icon="@drawable/ic_action_dark_done"
         android:orderInCategory="100"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/acao2"
-        android:title="@string/menu_excluir"
-        android:orderInCategory="100"
-        app:showAsAction="never"
-        android:visible="false"/>
+        app:showAsAction="always" />
 
 </menu>

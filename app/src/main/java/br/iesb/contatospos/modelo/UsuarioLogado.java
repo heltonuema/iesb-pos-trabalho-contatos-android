@@ -27,6 +27,7 @@ public class UsuarioLogado  implements IUsuario{
         this.setEmail(usuario.getEmail());
         this.setSobrenome(usuario.getSobrenome());
         this.setUriFoto(usuario.getUriFoto());
+        this.setFacebookId(usuario.getFacebookId());
     }
 
     public void setNome(String nome) {

@@ -31,7 +31,6 @@ import com.facebook.login.widget.LoginButton;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 import br.iesb.contatospos.R;
@@ -297,6 +296,7 @@ public class LoginActivity extends AppCompatActivity { //implements LoaderCallba
         private final String mPassword;
         private final Context context;
         private boolean usuarioInexistente = false;
+        private boolean facebookUser = false;
         private UsuarioLogado usuarioLogado;
 
         UserLoginTask(String email, String password, Context context) {
@@ -324,11 +324,13 @@ public class LoginActivity extends AppCompatActivity { //implements LoaderCallba
                 }
 
                 String pPassword = results.get(0).getSenha();
-                if (pPassword != null) {
+                if (pPassword != null && !pPassword.isEmpty()) {
                     if(pPassword.equals(InputUtils.geraMD5(mPassword))){
                         usuarioLogado = new UsuarioLogado(results.get(0));
                         return true;
                     }
+                } else {
+                    facebookUser = true;
                 }
             }
             return false;
@@ -347,7 +349,18 @@ public class LoginActivity extends AppCompatActivity { //implements LoaderCallba
             } else if (usuarioInexistente) {
                 mEmailView.setError(getString(R.string.usuario_inexistente));
                 cadastrar(mEmail);
-            } else {
+            } else if(facebookUser){
+                final Snackbar aviso = Snackbar.make(mPasswordView, "Entre novamente com Facebook e edite o perfil definindo uma senha", Snackbar.LENGTH_INDEFINITE);
+                aviso.show();
+                aviso.setAction("OK", new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        aviso.dismiss();
+                    }
+                });
+
+            } else
+            {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
             }
@@ -360,4 +373,3 @@ public class LoginActivity extends AppCompatActivity { //implements LoaderCallba
         }
     }
 }
-

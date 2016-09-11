@@ -64,7 +64,7 @@ public class ContatosPos extends Application {
                                     @Override
                                     public void execute(Realm realm) {
                                         try {
-                                            realm.copyToRealm(usuario);
+                                            realm.copyToRealmOrUpdate(usuario);
                                         }catch (RealmPrimaryKeyConstraintException e){
                                             Log.i("ja existente", e.getLocalizedMessage());
                                         }
