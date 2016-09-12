@@ -59,7 +59,11 @@
         <activity
             android:name=".activity.CadastroContatoActivity"
             android:label="IESB Social"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:parentActivityName=".activity.ListaContatosActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.ListaContatosActivity"/>
         </activity>
 
         <activity

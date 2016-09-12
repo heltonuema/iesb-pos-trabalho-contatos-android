@@ -16,6 +16,9 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.login.LoginManager;
+
 import br.iesb.contatospos.R;
 import br.iesb.contatospos.application.ContatosPos;
 import br.iesb.contatospos.modelo.Contato;
@@ -39,6 +42,7 @@ public class ListaContatosActivity extends AppCompatActivity implements View.OnC
         super.onCreate(savedInstanceState);
 
         if (ContatosPos.getUsuarioLogado() == null) {
+            LoginManager.getInstance().logOut();
             Intent intent = new Intent(this, LoginActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
@@ -47,47 +51,28 @@ public class ListaContatosActivity extends AppCompatActivity implements View.OnC
             return;
         }
 
-
-        searchIcon = (ImageView) findViewById(R.id.imv_tb_search);
-        searchField = (EditText) findViewById(R.id.edt_tb_search);
-
-        if(searchIcon == null){
-            Toast.makeText(this, "Search icon null", Toast.LENGTH_SHORT).show();
-        }
-
-//        searchIcon.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (searchField.getVisibility() == View.VISIBLE) {
-//                    searchField.setVisibility(View.INVISIBLE);
-//                } else {
-//                    searchField.setVisibility(View.VISIBLE);
-//                }
-//            }
-//        });
-
         realm = Realm.getDefaultInstance();
         setContentView(R.layout.activity_lista_contatos);
 
         addNovoContato = (FloatingActionButton) findViewById(R.id.addcontato);
 
-//        pesquisa = (EditText) findViewById(R.id.Pesquisa);
         contatos = realm.where(Contato.class).findAll();
         listContatos = (ListView) findViewById(R.id.ListaContatos);
 
-
         addNovoContato.setOnClickListener(this);
-        //listContatos.setOnItemClickListener((AdapterView.OnItemClickListener) this);
-
-
     }
 
 
     @Override
     public void onClick(View v) {
 
-        Intent it = new Intent(this, CadastroContatoActivity.class);
-        startActivity(it);
+        switch(v.getId()){
+            case R.id.addcontato:
+                Intent intent = new Intent(this, CadastroContatoActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivityForResult(intent, RequestCode.ANY_ACTION);
+                break;
+        }
 
     }
 
@@ -115,7 +100,6 @@ public class ListaContatosActivity extends AppCompatActivity implements View.OnC
                 finish();
                 System.exit(0);
         }
-
         return super.onOptionsItemSelected(item);
     }
 

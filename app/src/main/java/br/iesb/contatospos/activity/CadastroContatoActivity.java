@@ -61,7 +61,7 @@ public class CadastroContatoActivity extends AppCompatActivity {
         fotoContato.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tirarFotoEGravar();
+                takePicture();
             }
         });
 
@@ -84,6 +84,8 @@ public class CadastroContatoActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
     }
 
@@ -142,27 +144,28 @@ public class CadastroContatoActivity extends AppCompatActivity {
     }
 
     private void salvaContato() {
-        Toast.makeText(this, "Contato salvo", Toast.LENGTH_SHORT).show();
-        try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
 
-            if (fotoBitmap.compress(Bitmap.CompressFormat.JPEG, Bitmap.DENSITY_NONE, out)) {
-                Toast.makeText(this, "Imagem salva", Toast.LENGTH_SHORT).show();
-                final String base64 = Base64.encodeToString(out.toByteArray(), Base64.DEFAULT);
-                Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
-                    @Override
-                    public void execute(Realm realm) {
-                        Foto foto = realm.createObject(Foto.class);
-                        foto.setPath(fotoPath);
-                        foto.setBase64(base64);
-                        realm.copyToRealmOrUpdate(foto);
-                    }
-                });
+        if(fotoBitmap != null) {
+            try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+                if (fotoBitmap.compress(Bitmap.CompressFormat.JPEG, Bitmap.DENSITY_NONE, out)) {
+                    Toast.makeText(this, "Imagem salva", Toast.LENGTH_SHORT).show();
+                    final String base64 = Base64.encodeToString(out.toByteArray(), Base64.DEFAULT);
+                    Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            Foto foto = realm.createObject(Foto.class);
+                            foto.setPath(fotoPath);
+                            foto.setBase64(base64);
+                            realm.copyToRealmOrUpdate(foto);
+                        }
+                    });
+                }
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
         Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
             @Override
@@ -176,6 +179,9 @@ public class CadastroContatoActivity extends AppCompatActivity {
                 realm.copyToRealm(contato);
             }
         });
+        Toast.makeText(this, "Contato salvo", Toast.LENGTH_SHORT).show();
+        setResult(RESULT_OK, null);
+        finish();
     }
 
 
@@ -239,6 +245,17 @@ public class CadastroContatoActivity extends AppCompatActivity {
                 setPic();
             }
         }
+    }
+
+    private void takePicture(){
+        File diretorioImagens = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        String nomeFoto = "foto_contatos_iesb".concat(new SimpleDateFormat("yyyyMMdd_hhmmss").format(new Date())).concat(".jpg");
+        File file = new File(diretorioImagens, nomeFoto);
+        Uri uri = Uri.fromFile(file);
+
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+        startActivityForResult(intent, 2);
     }
 
     private void acidionaFotoGaleria() {

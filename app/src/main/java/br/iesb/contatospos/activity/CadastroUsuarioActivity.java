@@ -1,11 +1,13 @@
 package br.iesb.contatospos.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
 
@@ -88,7 +90,15 @@ public class CadastroUsuarioActivity extends AppCompatActivity {
                 usuarioPersistido.setNome(vNome.getText().toString());
                 usuarioPersistido.setSenha(InputUtils.geraMD5(vSenha.getText().toString()));
                 realm.commitTransaction();
-                Snackbar.make(vEmail, "Usuario cadastrado com sucesso", Snackbar.LENGTH_SHORT).show();
+                final Snackbar snackbar = Snackbar.make(vEmail, "Usuario cadastrado com sucesso", Snackbar.LENGTH_SHORT);
+                snackbar.setAction("Continuar", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        snackbar.dismiss();
+                        irParaActivityPrincipal();
+                    }
+                });
+                snackbar.show();
             }
 
         } catch (EntradaInvalidaException e) {
@@ -112,6 +122,14 @@ public class CadastroUsuarioActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         //getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
+    }
+
+    public void irParaActivityPrincipal(){
+        Intent intent = new Intent(this, ListaContatosActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        startActivity(intent);
+        finish();
     }
 
     @Override
