@@ -68,7 +68,7 @@ public class LoginActivity extends AppCompatActivity { //implements LoaderCallba
 //        realmConfig = new RealmConfiguration.Builder(this).build();
 
         if(ContatosPos.getUsuarioLogado() != null){
-            goToActivity(ListaContatosActivity.class, null);
+            goToActivity(MainFragmentActivity.class, null);
         }
         realm = Realm.getDefaultInstance();
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
