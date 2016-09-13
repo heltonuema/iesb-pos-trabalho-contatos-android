@@ -23,6 +23,7 @@
             android:authorities="br.iesb.contatospos"
             android:exported="false"
             android:grantUriPermissions="true">
+
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths"></meta-data>
@@ -58,7 +59,7 @@
 
         <activity
             android:name=".activity.CadastroContatoActivity"
-            android:label="IESB Social"
+            android:label="Cadastro"
             android:screenOrientation="portrait"
             android:parentActivityName=".activity.ListaContatosActivity">
             <meta-data
@@ -69,7 +70,7 @@
         <activity
             android:name=".activity.LoginActivity"
             android:screenOrientation="portrait"
-            android:label="@string/title_activity_login">
+            android:label="IESB Social">
             <intent-filter android:label="@string/app_name">
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

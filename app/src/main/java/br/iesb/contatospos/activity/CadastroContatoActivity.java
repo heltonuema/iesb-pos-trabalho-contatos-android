@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -68,22 +69,23 @@ public class CadastroContatoActivity extends AppCompatActivity {
         contato = new Contato();
         contato.setId(UUID.randomUUID().toString());
 
+
         Toolbar toolBar = (Toolbar) findViewById(R.id.toolbarCadContato);
-
-        toolBar.inflateMenu(R.menu.menu_add_novo_contato);
-        toolBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-
-                switch (item.getItemId()) {
-                    case R.id.menuContatoSalvar:
-                        salvaContato();
-                        break;
-                }
-
-                return true;
-            }
-        });
+//        toolBar.inflateMenu(R.menu.menu_add_novo_contato);
+//        toolBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+//            @Override
+//            public boolean onMenuItemClick(MenuItem item) {
+//
+//                switch (item.getItemId()) {
+//                    case R.id.menuContatoSalvar:
+//                        salvaContato();
+//                        break;
+//                }
+//
+//                return true;
+//            }
+//        });
+        setSupportActionBar(toolBar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -104,9 +106,13 @@ public class CadastroContatoActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 //
-//        MenuInflater inflater = getMenuInflater();
-//        inflater.inflate(R.menu.menu_add_novo_contato, menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_add_novo_contato, menu);
 //
+        if(contato == null){
+            MenuItem menuItem = menu.getItem(1);
+            menuItem.setEnabled(false);
+        }
 //        if (contato != null)
 //            menu.getItem(1).setVisible(true);
 
@@ -116,21 +122,22 @@ public class CadastroContatoActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-//        switch (item.getItemId()){
-//            case R.id.acao1:
-//
-//                salvaContato();
-//                finish();
-//
-//                break;
-//
+        switch (item.getItemId()){
+            case R.id.menuContatoSalvar:
+
+                salvaContato();
+                Toast.makeText(this, "Contato salvo", Toast.LENGTH_SHORT).show();
+                finish();
+
+                break;
+
 //            case R.id.acao2:
 //
 //                deletaContato();
 //                finish();
 //
 //                break;
-//        }
+        }
 
         return super.onOptionsItemSelected(item);
     }

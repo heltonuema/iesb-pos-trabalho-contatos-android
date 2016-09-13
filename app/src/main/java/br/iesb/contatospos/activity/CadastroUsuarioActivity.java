@@ -41,6 +41,9 @@ public class CadastroUsuarioActivity extends AppCompatActivity {
         vConfirmacao = (AutoCompleteTextView) findViewById(R.id.cadastroConfirmaSenha);
         vTelefone = (AutoCompleteTextView) findViewById(R.id.cadastroTelefone);
 
+        Toolbar appToolbar = (Toolbar) findViewById(R.id.toolbarAppCadastroUsuario);
+        setSupportActionBar(appToolbar);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarCadUsuario);
         toolbar.inflateMenu(R.menu.menu_tb_cadastro_usuario);
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {

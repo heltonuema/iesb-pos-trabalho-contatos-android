@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -64,12 +65,17 @@ public class LoginActivity extends AppCompatActivity { //implements LoaderCallba
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        // Set up the login form.
-//        realmConfig = new RealmConfiguration.Builder(this).build();
+
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        toolbar.setTitle("Bem-vindo");
+        setSupportActionBar(toolbar);
 
         if(ContatosPos.getUsuarioLogado() != null){
-            goToActivity(MainFragmentActivity.class, null);
+
+            goToActivity(ListaContatosActivity.class, null);
         }
+
         realm = Realm.getDefaultInstance();
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
@@ -145,8 +151,6 @@ public class LoginActivity extends AppCompatActivity { //implements LoaderCallba
                 intent.putExtra(key,value);
             }
         }
-//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(intent);
         finish();
     }
@@ -160,7 +164,7 @@ public class LoginActivity extends AppCompatActivity { //implements LoaderCallba
     private void cadastrar(final String email) {
 
         goToActivity(CadastroUsuarioActivity.class, "email,".concat(email));
-//
+
     }
 
     private void populateAutoComplete() {
@@ -344,8 +348,7 @@ public class LoginActivity extends AppCompatActivity { //implements LoaderCallba
             if (success) {
                 ContatosPos.setUsuarioLogado(usuarioLogado);
                 Snackbar.make(mPasswordView, String.format("Fez login como %s", usuarioLogado.getEmail()), Snackbar.LENGTH_SHORT).show();
-                goToActivity(ListaContatosActivity.class);
-                finish();
+                goToActivity(ListaContatosActivity.class,null);
             } else if (usuarioInexistente) {
                 mEmailView.setError(getString(R.string.usuario_inexistente));
                 cadastrar(mEmail);
