@@ -2,6 +2,7 @@ package br.iesb.contatospos.activity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -62,7 +63,7 @@ public class CadastroContatoActivity extends AppCompatActivity {
         fotoContato.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                takePicture();
+                escolherFoto();
             }
         });
 
@@ -237,7 +238,7 @@ public class CadastroContatoActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             Uri uriParaFoto = FileProvider.getUriForFile(getApplicationContext(), "br.iesb.contatospos", fotoContato);
-//            intent.putExtra(MediaStore.EXTRA_OUTPUT, uriParaFoto);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, uriParaFoto);
             startActivityForResult(intent, RequestCode.CADASTRO_CONTATO_FOTO);
         }
 
@@ -246,24 +247,14 @@ public class CadastroContatoActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RequestCode.CADASTRO_CONTATO_FOTO && resultCode == RESULT_OK) {
-            if (data != null) {
-                Bundle extras = data.getExtras();
-                fotoBitmap = (Bitmap) extras.get("data");
-                setPic();
-            }
+//            if (data != null) {
+//                Bundle extras = data.getExtras();
+//                fotoBitmap = (Bitmap) extras.get("data");
+//                setPic();
+//            }
         }
     }
 
-    private void takePicture(){
-        File diretorioImagens = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-        String nomeFoto = "foto_contatos_iesb".concat(new SimpleDateFormat("yyyyMMdd_hhmmss").format(new Date())).concat(".jpg");
-        File file = new File(diretorioImagens, nomeFoto);
-        Uri uri = Uri.fromFile(file);
-
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-        startActivityForResult(intent, 2);
-    }
 
     private void acidionaFotoGaleria() {
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
@@ -276,7 +267,27 @@ public class CadastroContatoActivity extends AppCompatActivity {
 
     private void setPic() {
 
-        fotoContato.setImageBitmap(fotoBitmap);
+        // Get the dimensions of the View
+        int targetW = fotoContato.getWidth();
+        int targetH = fotoContato.getHeight();
+
+        // Get the dimensions of the bitmap
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(fotoPath, bmOptions);
+        int photoW = bmOptions.outWidth;
+        int photoH = bmOptions.outHeight;
+
+        // Determine how much to scale down the image
+        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+
+        // Decode the image file into a Bitmap sized to fill the View
+        bmOptions.inJustDecodeBounds = false;
+        bmOptions.inSampleSize = scaleFactor;
+        bmOptions.inPurgeable = true;
+
+        Bitmap bitmap = BitmapFactory.decodeFile(fotoPath, bmOptions);
+        fotoContato.setImageBitmap(bitmap);
     }
 
     private void deletaContato() {

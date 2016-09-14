@@ -56,7 +56,7 @@ public class ContatosPos extends Application {
                         usuario.setEmail(response.getJSONObject().getString("email"));
                         usuario.setNome(response.getJSONObject().getString("first_name"));
                         usuario.setSobrenome(response.getJSONObject().getString("last_name"));
-                        usuario.setFacebookId(AccessToken.getCurrentAccessToken().getUserId());
+                        usuario.setFacebookId(response.getJSONObject().getString("id"));
                         if (usuario.getEmail() != null && !usuario.getEmail().isEmpty()) {
                             if (usuario.getNome() != null && !usuario.getNome().isEmpty()) {
                                 usuarioLogado = new UsuarioLogado(usuario);
