@@ -60,6 +60,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private LoginButton loginButtonFacebook;
     private CallbackManager callbackManager;
     private final LoginActivity loginActivity = this;
+    private Button criarConta;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +85,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         populateAutoComplete();
         mEmailView.setNextFocusForwardId(R.id.password);
         mEmailView.setNextFocusDownId(R.id.password);
+
+        criarConta = (Button) findViewById(R.id.criar_conta);
+        criarConta.setOnClickListener(this);
 
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -296,8 +300,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onClick(View view) {
-        if(view.getId() == R.id.login_button_facebook){
-            showProgress(true);
+        switch(view.getId()) {
+            case R.id.login_button_facebook:
+                showProgress(true);
+                break;
+            case R.id.criar_conta:
+                Intent intent = new Intent(this, CadastroUsuarioActivity.class);
+                startActivityForResult(intent, 0);
+                break;
         }
     }
 
@@ -386,4 +396,5 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             showProgress(false);
         }
     }
+
 }
