@@ -43,11 +43,11 @@ public class ContatosPos extends Application {
         Realm.setDefaultConfiguration(realmConfiguration);
         FacebookSdk.sdkInitialize(this);
         if (usuarioLogado == null && AccessToken.getCurrentAccessToken() != null) {
-            getCredentials(null);
+            getCredentials();
         }
     }
 
-    public static void getCredentials(final LoginActivity loginActivity) {
+    public static void getCredentials() {
 
 
         if (AccessToken.getCurrentAccessToken() != null) {
@@ -86,10 +86,6 @@ public class ContatosPos extends Application {
                         e.printStackTrace();
                     } finally {
                         isInTask = false;
-                        if(loginActivity != null){
-                            loginActivity.goToActivity(ListaContatosActivity.class);
-                        }
-
                     }
 
                 }
@@ -120,7 +116,7 @@ public class ContatosPos extends Application {
             realm.close();
 
             if (usuarioLogado == null) {
-                getCredentials(null);
+                getCredentials();
             }
         }
 

@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -37,6 +38,8 @@ import java.util.List;
 import br.iesb.contatospos.R;
 import br.iesb.contatospos.application.ContatosPos;
 import br.iesb.contatospos.exception.EntradaInvalidaException;
+import br.iesb.contatospos.modelo.IContato;
+import br.iesb.contatospos.modelo.IUsuario;
 import br.iesb.contatospos.modelo.Usuario;
 import br.iesb.contatospos.modelo.UsuarioLogado;
 import br.iesb.contatospos.util.InputUtils;
@@ -59,14 +62,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private View mLoginFormView;
     private LoginButton loginButtonFacebook;
     private CallbackManager callbackManager;
-    private final LoginActivity loginActivity = this;
     private Button criarConta;
+    private AfterFacebookLogin afterFacebookLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        mLoginFormView = findViewById(R.id.login_form);
+        mProgressView = findViewById(R.id.login_progress);
+        showProgress(true);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
 
@@ -122,8 +128,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     LoginManager.getInstance().logOut();
                     Snackbar.make(mEmailView, "Permissão para ler endereço de e-mail é necessária", Snackbar.LENGTH_SHORT).show();
                 } else {
-                    showProgress(true);
-                    ContatosPos.getCredentials(loginActivity);
+                    afterFacebookLogin.execute();
+//                    ContatosPos.getCredentials(loginActivity);
 //                    goToActivity(ListaContatosActivity.class, null);
                 }
 
@@ -141,8 +147,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
         });
 
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
+        afterFacebookLogin = new AfterFacebookLogin();
+
+        showProgress(false);
     }
 
     public void goToActivity(Class<?> activity, String...extras) {
@@ -166,6 +173,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode != RequestCode.ANY_ACTION && resultCode == RESULT_OK){
+            showProgress(true);
+        }
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -394,6 +404,31 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         @Override
         protected void onCancelled() {
             mAuthTask = null;
+            showProgress(false);
+        }
+    }
+
+    public class AfterFacebookLogin extends AsyncTask<Void, Void, Boolean>{
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            ContatosPos.getCredentials();
+            IUsuario contato = null;
+            while(contato == null){
+                contato = ContatosPos.getUsuarioLogado();
+            }
+
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aVoid) {
+            showProgress(false);
+            goToActivity(ListaContatosActivity.class);
+        }
+
+        @Override
+        protected void onCancelled() {
             showProgress(false);
         }
     }
