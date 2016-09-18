@@ -47,7 +47,7 @@ import io.realm.RealmResults;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity { //implements LoaderCallbacks<Cursor> {
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener{ //implements LoaderCallbacks<Cursor> {
 
     Realm realm;
     private UserLoginTask mAuthTask = null;
@@ -58,8 +58,8 @@ public class LoginActivity extends AppCompatActivity { //implements LoaderCallba
     private View mProgressView;
     private View mLoginFormView;
     private LoginButton loginButtonFacebook;
-
     private CallbackManager callbackManager;
+    private final LoginActivity loginActivity = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,12 +68,15 @@ public class LoginActivity extends AppCompatActivity { //implements LoaderCallba
 
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        toolbar.setTitle("Bem-vindo");
-        setSupportActionBar(toolbar);
+
+        if(toolbar != null) {
+            toolbar.setTitle("Bem-vindo");
+            setSupportActionBar(toolbar);
+        }
 
         if(ContatosPos.getUsuarioLogado() != null){
 
-            goToActivity(ListaContatosActivity.class, null);
+            goToActivity(ListaContatosActivity.class);
         }
 
         realm = Realm.getDefaultInstance();
@@ -115,8 +118,9 @@ public class LoginActivity extends AppCompatActivity { //implements LoaderCallba
                     LoginManager.getInstance().logOut();
                     Snackbar.make(mEmailView, "Permissão para ler endereço de e-mail é necessária", Snackbar.LENGTH_SHORT).show();
                 } else {
-                    ContatosPos.getCredentials();
-                    goToActivity(ListaContatosActivity.class, null);
+                    showProgress(true);
+                    ContatosPos.getCredentials(loginActivity);
+//                    goToActivity(ListaContatosActivity.class, null);
                 }
 
             }
@@ -137,17 +141,17 @@ public class LoginActivity extends AppCompatActivity { //implements LoaderCallba
         mProgressView = findViewById(R.id.login_progress);
     }
 
-    private void goToActivity(Class<?> activity, String...extras) {
+    public void goToActivity(Class<?> activity, String...extras) {
 
         Intent intent = new Intent(this, activity);
 
         if(extras != null){
-            for(int i = 0; i < extras.length; i++){
-                if(extras[i].split(",").length < 2){
+            for(String extra : extras){
+                if(extra.split(",").length < 2){
                     throw new RuntimeException("Esperado chave e valor separado por virgula");
                 }
-                String key = extras[i].split(",")[0].trim();
-                String value = extras[i].split(",")[1].trim();
+                String key = extra.split(",")[0].trim();
+                String value = extra.split(",")[1].trim();
                 intent.putExtra(key,value);
             }
         }
@@ -248,7 +252,7 @@ public class LoginActivity extends AppCompatActivity { //implements LoaderCallba
      * Shows the progress UI and hides the login form.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    private void showProgress(final boolean show) {
+    protected void showProgress(final boolean show) {
         // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
         // for very easy animations. If available, use these APIs to fade-in
         // the progress spinner.
@@ -288,6 +292,13 @@ public class LoginActivity extends AppCompatActivity { //implements LoaderCallba
                         android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
 
         mEmailView.setAdapter(adapter);
+    }
+
+    @Override
+    public void onClick(View view) {
+        if(view.getId() == R.id.login_button_facebook){
+            showProgress(true);
+        }
     }
 
     /**
@@ -348,7 +359,7 @@ public class LoginActivity extends AppCompatActivity { //implements LoaderCallba
             if (success) {
                 ContatosPos.setUsuarioLogado(usuarioLogado);
                 Snackbar.make(mPasswordView, String.format("Fez login como %s", usuarioLogado.getEmail()), Snackbar.LENGTH_SHORT).show();
-                goToActivity(ListaContatosActivity.class,null);
+                goToActivity(ListaContatosActivity.class);
             } else if (usuarioInexistente) {
                 mEmailView.setError(getString(R.string.usuario_inexistente));
                 cadastrar(mEmail);

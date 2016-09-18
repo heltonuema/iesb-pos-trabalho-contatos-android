@@ -1,13 +1,10 @@
 package br.iesb.contatospos.activity;
 
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -18,14 +15,8 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.Toast;
 
-import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import br.iesb.contatospos.R;
 import br.iesb.contatospos.application.ContatosPos;
@@ -87,8 +78,10 @@ public class ListaContatosActivity extends AppCompatActivity implements View.OnC
         }
 
         tabLayout = (TabLayout) findViewById(R.id.tabsListaContatos);
-        tabLayout.setupWithViewPager(mainPager);
 
+        if(tabLayout != null) {
+            tabLayout.setupWithViewPager(mainPager);
+        }
 
     }
 

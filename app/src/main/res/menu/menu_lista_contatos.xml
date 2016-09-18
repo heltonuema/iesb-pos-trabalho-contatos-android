@@ -5,11 +5,18 @@
     >
 
     <item
+        android:id="@+id/lista_menu_bluetooth"
+        android:title="Pesquisar bluetooth"
+        android:icon="@drawable/ic_bluetooth"
+        android:orderInCategory="100"
+        app:showAsAction="ifRoom"/>
+
+    <item
         android:id="@+id/lista_menu_search"
         android:title="Pesquisar nos contatos"
         android:icon="@drawable/ic_action_pesquisa_contatos"
         android:orderInCategory="100"
-        app:showAsAction="always"/>
+        app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/acao_altera_cad"

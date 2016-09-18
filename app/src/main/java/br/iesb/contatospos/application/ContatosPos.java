@@ -13,6 +13,8 @@ import com.facebook.login.LoginManager;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import br.iesb.contatospos.activity.ListaContatosActivity;
+import br.iesb.contatospos.activity.LoginActivity;
 import br.iesb.contatospos.modelo.Usuario;
 import br.iesb.contatospos.modelo.UsuarioLogado;
 import io.realm.Realm;
@@ -23,6 +25,7 @@ import io.realm.exceptions.RealmPrimaryKeyConstraintException;
 
 /**
  * Created by Helton on 05/09/16.
+ * Garante a incializacao
  */
 public class ContatosPos extends Application {
 
@@ -37,11 +40,11 @@ public class ContatosPos extends Application {
         Realm.setDefaultConfiguration(realmConfiguration);
         FacebookSdk.sdkInitialize(this);
         if (usuarioLogado == null && AccessToken.getCurrentAccessToken() != null) {
-            getCredentials();
+            getCredentials(null);
         }
     }
 
-    public static void getCredentials() {
+    public static void getCredentials(final LoginActivity loginActivity) {
 
 
         if (AccessToken.getCurrentAccessToken() != null) {
@@ -80,6 +83,9 @@ public class ContatosPos extends Application {
                         e.printStackTrace();
                     } finally {
                         isInTask = false;
+                        if(loginActivity != null){
+                            loginActivity.goToActivity(ListaContatosActivity.class);
+                        }
                     }
 
                 }
@@ -110,14 +116,16 @@ public class ContatosPos extends Application {
             realm.close();
 
             if (usuarioLogado == null) {
-                getCredentials();
+                getCredentials(null);
             }
         }
 
         if (isInTask) {
             long timeout = 10000;
             long init = System.currentTimeMillis();
+            int i = 0;
             while ((System.currentTimeMillis() - init) < timeout && usuarioLogado == null) {
+                i++;
             }
         }
 
