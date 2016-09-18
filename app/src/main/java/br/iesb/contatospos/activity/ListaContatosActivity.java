@@ -3,6 +3,7 @@ package br.iesb.contatospos.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
@@ -135,6 +136,24 @@ public class ListaContatosActivity extends AppCompatActivity implements View.OnC
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == RequestCode.LISTA_BLUTOOTH){
+            if(resultCode == RESULT_OK){
+                String dispostivo = data.getStringExtra("dispositivo");
+                final Snackbar snackbar = Snackbar.make(addNovoContato, String.format("Dispositivo selecionado: %s", dispostivo), Snackbar.LENGTH_INDEFINITE);
+                snackbar.setAction("OK", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        snackbar.dismiss();
+                    }
+                });
+                snackbar.show();
+            }
+        }
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
@@ -142,6 +161,13 @@ public class ListaContatosActivity extends AppCompatActivity implements View.OnC
 
                 break;
 
+            case R.id.lista_menu_search:
+                break;
+
+            case R.id.lista_menu_bluetooth:
+                Intent intent = new Intent(this, ListaBluetoothActivity.class);
+                startActivityForResult(intent, RequestCode.LISTA_BLUTOOTH);
+                break;
             case R.id.acao_sair:
 
                 ContatosPos.logout();

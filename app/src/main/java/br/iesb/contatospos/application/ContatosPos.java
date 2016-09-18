@@ -1,6 +1,7 @@
 package br.iesb.contatospos.application;
 
 import android.app.Application;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -33,9 +34,11 @@ public class ContatosPos extends Application {
 
     private static boolean isInTask = false;
 
+
     @Override
     public void onCreate() {
         super.onCreate();
+
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder(this).deleteRealmIfMigrationNeeded().build();
         Realm.setDefaultConfiguration(realmConfiguration);
         FacebookSdk.sdkInitialize(this);
@@ -86,6 +89,7 @@ public class ContatosPos extends Application {
                         if(loginActivity != null){
                             loginActivity.goToActivity(ListaContatosActivity.class);
                         }
+
                     }
 
                 }

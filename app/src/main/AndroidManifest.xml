@@ -3,6 +3,7 @@
     package="br.iesb.contatospos">
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
@@ -82,7 +83,8 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
 
-        <activity android:name=".activity.ListaBluetoothActivity"/>
+        <activity android:name=".activity.ListaBluetoothActivity"
+            android:theme="@style/AppTheme.Popup"/>
     </application>
 
 </manifest>
