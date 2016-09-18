@@ -76,27 +76,39 @@
 
             </android.support.design.widget.TextInputLayout>
 
-            <Button
-                android:id="@+id/email_sign_in_button"
-                style="?android:textAppearanceSmall"
+            <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:background="@color/colorAccent"
-                android:text="@string/email_sign_in_button"
-                android:textColor="#FFFFFF"
-                android:textStyle="bold" />
+                android:layout_height="wrap_content">
 
             <Button
                 android:id="@+id/criar_conta"
                 style="?android:textAppearanceSmall"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="2dp"
                 android:layout_marginTop="16dp"
-                android:background="@color/colorAccent"
                 android:text="@string/criar_conta"
                 android:textColor="#FFFFFF"
                 android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/email_sign_in_button"
+                style="?android:textAppearanceSmall"
+                android:layout_width="wrap_content"
+                android:padding="2dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:backgroundTint="@color/colorAccent"
+                android:text="@string/email_sign_in_button"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold" />
+
+            </LinearLayout>
+
+
 
             <LinearLayout
                 android:layout_width="match_parent"
