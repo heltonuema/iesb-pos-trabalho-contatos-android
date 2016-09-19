@@ -1,12 +1,17 @@
 package br.iesb.contatospos.activity;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -100,9 +105,10 @@ public class CadastroContatoActivity extends AppCompatActivity {
         File fotosDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File foto = File.createTempFile(imageFileName, ".jpg", fotosDir);
 
-        fotoPath = "file:" + foto.getAbsolutePath();
+        fotoPath = foto.getAbsolutePath(); //"removido file:"
         return foto;
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -110,7 +116,7 @@ public class CadastroContatoActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_add_novo_contato, menu);
 //
-        if(contato == null){
+        if (contato == null) {
             MenuItem menuItem = menu.getItem(1);
             menuItem.setEnabled(false);
         }
@@ -123,7 +129,7 @@ public class CadastroContatoActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.menuContatoSalvar:
 
                 salvaContato();
@@ -153,7 +159,7 @@ public class CadastroContatoActivity extends AppCompatActivity {
 
     private void salvaContato() {
 
-        if(fotoBitmap != null) {
+        if (fotoBitmap != null) {
             try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
                 if (fotoBitmap.compress(Bitmap.CompressFormat.JPEG, Bitmap.DENSITY_NONE, out)) {
                     Toast.makeText(this, "Imagem salva", Toast.LENGTH_SHORT).show();
@@ -218,47 +224,76 @@ public class CadastroContatoActivity extends AppCompatActivity {
         Toast.makeText(this, "Tirando fotos", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-        File fotoContato = null;
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
 
-        try {
-            fotoContato = criaArquivoParaImagem(contato.getId());
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
-        }
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
 
-        if (fotoContato != null) {
-            try {
-                FileInputStream fis = new FileInputStream(fotoContato);
-                BufferedReader reader = new BufferedReader(new FileReader(fotoContato));
-                System.out.print(reader.readLine());
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
+                File fotoContato = null;
+
+                try {
+                    fotoContato = criaArquivoParaImagem(contato.getId());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return;
+                }
+
+                if (fotoContato != null) {
+                    try {
+                        FileInputStream fis = new FileInputStream(fotoContato);
+                        BufferedReader reader = new BufferedReader(new FileReader(fotoContato));
+                        System.out.print(reader.readLine());
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    Uri uriParaFoto = FileProvider.getUriForFile(getApplicationContext(), "br.iesb.contatospos", fotoContato);
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, uriParaFoto);
+                    startActivityForResult(intent, RequestCode.CADASTRO_CONTATO_FOTO);
+                }
+            } else {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, RequestCode.REQUEST_WRITE_PERMISSION);
             }
-            Uri uriParaFoto = FileProvider.getUriForFile(getApplicationContext(), "br.iesb.contatospos", fotoContato);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, uriParaFoto);
-            startActivityForResult(intent, RequestCode.CADASTRO_CONTATO_FOTO);
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, RequestCode.REQUEST_CAMERA_PERMISSION);
         }
 
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == RequestCode.REQUEST_CAMERA_PERMISSION || requestCode == RequestCode.REQUEST_WRITE_PERMISSION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                escolherFoto();
+            }
+        }
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RequestCode.CADASTRO_CONTATO_FOTO && resultCode == RESULT_OK) {
+
+
+            adicionaFotoGaleria();
+            setPic();
+
 //            if (data != null) {
 //                Bundle extras = data.getExtras();
-//                fotoBitmap = (Bitmap) extras.get("data");
+//                fotoBitmap = (Bitmap) extras.get("data"); //JPEG
 //                setPic();
 //            }
         }
     }
 
 
-    private void acidionaFotoGaleria() {
+    private void adicionaFotoGaleria() {
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         File f = new File(fotoPath);
+        try {
+            FileInputStream fis = new FileInputStream(f);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
         Uri contentUri = Uri.fromFile(f);
         mediaScanIntent.setData(contentUri);
         this.sendBroadcast(mediaScanIntent);
@@ -279,7 +314,7 @@ public class CadastroContatoActivity extends AppCompatActivity {
         int photoH = bmOptions.outHeight;
 
         // Determine how much to scale down the image
-        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+        int scaleFactor = Math.min(photoW / targetW, photoH / targetH);
 
         // Decode the image file into a Bitmap sized to fill the View
         bmOptions.inJustDecodeBounds = false;

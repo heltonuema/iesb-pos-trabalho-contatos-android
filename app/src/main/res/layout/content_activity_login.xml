@@ -90,7 +90,6 @@
                 android:padding="2dp"
                 android:layout_marginTop="16dp"
                 android:text="@string/criar_conta"
-                android:textColor="#FFFFFF"
                 android:textStyle="bold" />
 
             <Button

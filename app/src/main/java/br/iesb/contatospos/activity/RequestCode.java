@@ -6,6 +6,8 @@ package br.iesb.contatospos.activity;
 public class RequestCode {
 
 
+    public static final int REQUEST_CAMERA_PERMISSION = 4;
+    public static final int REQUEST_WRITE_PERMISSION = 5;
 
     public RequestCode(){
 
