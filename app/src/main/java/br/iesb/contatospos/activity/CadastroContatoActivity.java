@@ -224,9 +224,11 @@ public class CadastroContatoActivity extends AppCompatActivity {
         Toast.makeText(this, "Tirando fotos", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) ==
+                PackageManager.PERMISSION_GRANTED) {
 
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
+                    PackageManager.PERMISSION_GRANTED) {
 
                 File fotoContato = null;
 
@@ -247,15 +249,18 @@ public class CadastroContatoActivity extends AppCompatActivity {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    Uri uriParaFoto = FileProvider.getUriForFile(getApplicationContext(), "br.iesb.contatospos", fotoContato);
+                    Uri uriParaFoto = FileProvider.getUriForFile(getApplicationContext(),
+                            "br.iesb.contatospos", fotoContato);
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, uriParaFoto);
                     startActivityForResult(intent, RequestCode.CADASTRO_CONTATO_FOTO);
                 }
             } else {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, RequestCode.REQUEST_WRITE_PERMISSION);
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        RequestCode.REQUEST_WRITE_PERMISSION);
             }
         } else {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, RequestCode.REQUEST_CAMERA_PERMISSION);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA},
+                    RequestCode.REQUEST_CAMERA_PERMISSION);
         }
 
     }
@@ -287,16 +292,11 @@ public class CadastroContatoActivity extends AppCompatActivity {
 
 
     private void adicionaFotoGaleria() {
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         File f = new File(fotoPath);
-        try {
-            FileInputStream fis = new FileInputStream(f);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
         Uri contentUri = Uri.fromFile(f);
-        mediaScanIntent.setData(contentUri);
-        this.sendBroadcast(mediaScanIntent);
+//        mediaScanIntent.setData(contentUri);
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, contentUri);
+        sendBroadcast(mediaScanIntent);
     }
 
 
