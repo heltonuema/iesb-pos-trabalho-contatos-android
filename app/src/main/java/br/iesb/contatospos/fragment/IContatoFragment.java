@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 import br.iesb.contatospos.R;
 import br.iesb.contatospos.fragment.dummy.DummyContentContato;
 import br.iesb.contatospos.fragment.dummy.DummyContentContato.DummyItem;
+import br.iesb.contatospos.modelo.Contato;
+import io.realm.Realm;
 
 /**
  * A fragment representing a list of Items.
@@ -68,7 +70,7 @@ public class IContatoFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyIContatoRecyclerViewAdapter(DummyContentContato.ITEMS, mListener));
+            recyclerView.setAdapter(new MyIContatoRecyclerViewAdapter(Realm.getDefaultInstance().where(Contato.class), mListener));
         }
         return view;
     }
@@ -103,6 +105,6 @@ public class IContatoFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyItem item);
+        void onListFragmentInteraction(Contato item);
     }
 }

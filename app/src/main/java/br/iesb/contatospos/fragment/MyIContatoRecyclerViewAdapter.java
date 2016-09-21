@@ -9,7 +9,10 @@ import android.widget.TextView;
 import br.iesb.contatospos.R;
 import br.iesb.contatospos.fragment.IContatoFragment.OnListFragmentInteractionListener;
 import br.iesb.contatospos.fragment.dummy.DummyContentContato.DummyItem;
+import br.iesb.contatospos.modelo.Contato;
+import io.realm.RealmQuery;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -19,11 +22,12 @@ import java.util.List;
  */
 public class MyIContatoRecyclerViewAdapter extends RecyclerView.Adapter<MyIContatoRecyclerViewAdapter.ViewHolder> {
 
-    private final List<DummyItem> mValues;
+    private final List<Contato> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public MyIContatoRecyclerViewAdapter(List<DummyItem> items, OnListFragmentInteractionListener listener) {
-        mValues = items;
+    public MyIContatoRecyclerViewAdapter(RealmQuery<Contato> items, OnListFragmentInteractionListener listener) {
+        mValues = items.findAll();
+
         mListener = listener;
     }
 
@@ -37,8 +41,8 @@ public class MyIContatoRecyclerViewAdapter extends RecyclerView.Adapter<MyIConta
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        holder.mIdView.setText(mValues.get(position).getEmail());
+        holder.mContentView.setText(mValues.get(position).getNome());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,7 +65,7 @@ public class MyIContatoRecyclerViewAdapter extends RecyclerView.Adapter<MyIConta
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
-        public DummyItem mItem;
+        public Contato mItem;
 
         public ViewHolder(View view) {
             super(view);

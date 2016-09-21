@@ -92,7 +92,7 @@ public class ListaContatosActivity extends AppCompatActivity implements View.OnC
     }
 
     @Override
-    public void onListFragmentInteraction(DummyContentContato.DummyItem item) {
+    public void onListFragmentInteraction(Contato item) {
 
     }
 
