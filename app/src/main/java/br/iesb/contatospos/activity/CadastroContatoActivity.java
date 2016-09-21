@@ -280,7 +280,7 @@ public class CadastroContatoActivity extends AppCompatActivity {
 
 
             adicionaFotoGaleria();
-            setPic();
+            setPic(fotoContato, fotoPath);
 
 //            if (data != null) {
 //                Bundle extras = data.getExtras();
@@ -300,11 +300,12 @@ public class CadastroContatoActivity extends AppCompatActivity {
     }
 
 
-    private void setPic() {
+    public static void setPic(final ImageView fotoContato, final String fotoPath) {
 
         // Get the dimensions of the View
         int targetW = fotoContato.getWidth();
         int targetH = fotoContato.getHeight();
+
 
         // Get the dimensions of the bitmap
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();

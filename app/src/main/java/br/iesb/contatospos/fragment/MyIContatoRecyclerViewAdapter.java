@@ -4,9 +4,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import br.iesb.contatospos.R;
+import br.iesb.contatospos.activity.CadastroContatoActivity;
 import br.iesb.contatospos.fragment.IContatoFragment.OnListFragmentInteractionListener;
 import br.iesb.contatospos.fragment.dummy.DummyContentContato.DummyItem;
 import br.iesb.contatospos.modelo.Contato;
@@ -43,7 +45,7 @@ public class MyIContatoRecyclerViewAdapter extends RecyclerView.Adapter<MyIConta
         holder.mItem = mValues.get(position);
         holder.mIdView.setText(mValues.get(position).getEmail());
         holder.mContentView.setText(mValues.get(position).getNome());
-
+        CadastroContatoActivity.setPic(holder.mImageView, mValues.get(position).getUriFoto());
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,6 +67,7 @@ public class MyIContatoRecyclerViewAdapter extends RecyclerView.Adapter<MyIConta
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
+        public final ImageView mImageView;
         public Contato mItem;
 
         public ViewHolder(View view) {
@@ -72,6 +75,8 @@ public class MyIContatoRecyclerViewAdapter extends RecyclerView.Adapter<MyIConta
             mView = view;
             mIdView = (TextView) view.findViewById(R.id.id);
             mContentView = (TextView) view.findViewById(R.id.content);
+
+            mImageView = (ImageView) view.findViewById(R.id.fotoNaLista);
         }
 
         @Override
