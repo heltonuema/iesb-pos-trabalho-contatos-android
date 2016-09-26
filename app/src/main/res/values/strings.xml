@@ -40,6 +40,7 @@
     <string name="menu_salvar">Salvar</string>
     <string name="menu_excluir">Excluir</string>
     <string name="menu_alterar_cad">Meu perfil</string>
+    <string name="ver_mapa">Mapa</string>
     <string name="menu_sair">Sair</string>
     <string name="lnl_nome">Nome</string>
     <string name="lbl_telefone">Telefone</string>
@@ -50,5 +51,6 @@
     <string name="facebook_login_fail">Falha no login com Facebook</string>
     <string name="criar_conta">Criar Conta</string>
     <string name="email_sign_in_button">Entrar</string>
+    <string name="title_activity_maps">Map</string>
 
 </resources>
