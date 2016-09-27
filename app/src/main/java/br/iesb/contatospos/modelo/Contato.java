@@ -30,7 +30,9 @@ public class Contato extends RealmObject implements IContato {
     }
 
     public String getUriFoto(){
-        return new String(uriFoto);
+
+
+        return uriFoto;
     }
 
     public void setUriFoto(final String uri){

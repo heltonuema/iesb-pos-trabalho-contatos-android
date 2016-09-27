@@ -356,7 +356,9 @@ public class CadastroContatoActivity extends AppCompatActivity {
         bmOptions.inPurgeable = true;
 
         Bitmap bitmap = BitmapFactory.decodeFile(fotoPath, bmOptions);
-        fotoContato.setImageBitmap(getRoundedCornerBitmap(bitmap));
+        if(bitmap != null) {
+            fotoContato.setImageBitmap(getRoundedCornerBitmap(bitmap));
+        }
     }
 
     private void deletaContato() {
