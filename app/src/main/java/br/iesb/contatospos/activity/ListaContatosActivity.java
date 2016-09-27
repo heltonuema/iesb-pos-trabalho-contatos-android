@@ -8,6 +8,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -168,6 +169,12 @@ public class ListaContatosActivity extends AppCompatActivity implements View.OnC
                 Intent intent = new Intent(this, ListaBluetoothActivity.class);
                 startActivityForResult(intent, RequestCode.LISTA_BLUTOOTH);
                 break;
+
+            case R.id.ver_map:
+                Intent intent2 = new Intent(this, MapsActivity.class);
+                startActivityForResult(intent2, 0);
+                break;
+
             case R.id.acao_sair:
 
                 ContatosPos.logout();

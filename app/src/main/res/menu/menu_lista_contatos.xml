@@ -4,6 +4,8 @@
     tools:context=".activity.ListaContatosActivity"
     >
 
+
+
     <item
         android:id="@+id/lista_menu_bluetooth"
         android:title="Pesquisar bluetooth"
@@ -21,6 +23,11 @@
     <item
         android:id="@+id/acao_altera_cad"
         android:title="@string/menu_alterar_cad"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/ver_map"
+        android:title="@string/ver_mapa"
         android:orderInCategory="100"
         app:showAsAction="never" />
 

@@ -42,6 +42,8 @@ public class MyIContatoRecyclerViewAdapter extends RecyclerView.Adapter<MyIConta
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
+
+
         holder.mItem = mValues.get(position);
         holder.mIdView.setText(mValues.get(position).getEmail());
         holder.mContentView.setText(mValues.get(position).getNome());
