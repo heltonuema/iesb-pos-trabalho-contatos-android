@@ -5,6 +5,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -109,6 +115,27 @@ public class CadastroContatoActivity extends AppCompatActivity {
         return foto;
     }
 
+    public static Bitmap getRoundedCornerBitmap(Bitmap bitmap) {
+        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
+                bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(output);
+
+        final int color = 0xff424242;
+        final Paint paint = new Paint();
+        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+        final RectF rectF = new RectF(rect);
+        final float roundPx = 12;
+
+        paint.setAntiAlias(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        paint.setColor(color);
+        canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
+
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, rect, rect, paint);
+
+        return output;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -306,6 +333,12 @@ public class CadastroContatoActivity extends AppCompatActivity {
         int targetW = fotoContato.getWidth();
         int targetH = fotoContato.getHeight();
 
+        if(targetH == 0){
+            targetH=100;
+        }
+        if(targetW== 0){
+            targetW=100;
+        }
 
         // Get the dimensions of the bitmap
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
@@ -323,7 +356,7 @@ public class CadastroContatoActivity extends AppCompatActivity {
         bmOptions.inPurgeable = true;
 
         Bitmap bitmap = BitmapFactory.decodeFile(fotoPath, bmOptions);
-        fotoContato.setImageBitmap(bitmap);
+        fotoContato.setImageBitmap(getRoundedCornerBitmap(bitmap));
     }
 
     private void deletaContato() {
