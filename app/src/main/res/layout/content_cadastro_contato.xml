@@ -33,6 +33,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:scaleType="centerCrop"
                     android:src="@drawable/ic_action_name" />
 
                 <LinearLayout
@@ -85,7 +86,7 @@
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="10dp"
                     android:maxWidth="30dp"
-                    android:scaleType="fitCenter"
+                    android:scaleType="centerCrop"
                     android:contentDescription="Toque para escolher imagem"
                     android:padding="10dp"
                     android:src="@drawable/ic_action_name" />

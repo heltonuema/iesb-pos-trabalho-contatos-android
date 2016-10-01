@@ -46,6 +46,7 @@ import br.iesb.contatospos.R;
 import br.iesb.contatospos.modelo.Contato;
 import br.iesb.contatospos.modelo.Foto;
 import br.iesb.contatospos.modelo.IContato;
+import br.iesb.contatospos.util.RoundedImageView;
 import io.realm.Realm;
 
 
