@@ -89,7 +89,7 @@ public class CadastroUsuarioActivity extends AppCompatActivity {
 
                 realm.beginTransaction();
                 Usuario usuarioPersistido = realm.createObject(Usuario.class);
-                usuarioPersistido.setEmail(vEmail.getText().toString());
+                usuarioPersistido.setEmailUsuario(vEmail.getText().toString());
                 usuarioPersistido.setNome(vNome.getText().toString());
                 usuarioPersistido.setSenha(InputUtils.geraMD5(vSenha.getText().toString()));
                 realm.commitTransaction();

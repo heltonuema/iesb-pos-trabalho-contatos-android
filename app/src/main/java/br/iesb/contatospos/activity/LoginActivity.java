@@ -3,12 +3,10 @@ package br.iesb.contatospos.activity;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -38,7 +36,6 @@ import java.util.List;
 import br.iesb.contatospos.R;
 import br.iesb.contatospos.application.ContatosPos;
 import br.iesb.contatospos.exception.EntradaInvalidaException;
-import br.iesb.contatospos.modelo.IContato;
 import br.iesb.contatospos.modelo.IUsuario;
 import br.iesb.contatospos.modelo.Usuario;
 import br.iesb.contatospos.modelo.UsuarioLogado;
@@ -81,7 +78,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             setSupportActionBar(toolbar);
         }
 
-        if(ContatosPos.getUsuarioLogado() != null){
+        if(ContatosPos.getUsuarioLogado(getApplicationContext()) != null){
 
             goToActivity(ListaContatosActivity.class);
         }
@@ -196,7 +193,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             RealmResults<Usuario> results = query.findAll();
             List<String> emails = new ArrayList<>();
             for (Usuario usuario : results) {
-                emails.add(usuario.getEmail());
+                emails.add(usuario.getEmailUsuario());
             }
 
             addEmailsToAutoComplete(emails);
@@ -253,7 +250,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password, this);
+            mAuthTask = new UserLoginTask(email, password);
             mAuthTask.execute((Void) null);
         }
     }
@@ -330,15 +327,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         private final String mEmail;
         private final String mPassword;
-        private final Context context;
         private boolean usuarioInexistente = false;
         private boolean facebookUser = false;
         private UsuarioLogado usuarioLogado;
 
-        UserLoginTask(String email, String password, Context context) {
+        UserLoginTask(String email, String password) {
             mEmail = email;
             mPassword = password;
-            this.context = context;
         }
 
         @Override
@@ -379,7 +374,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             if (success) {
                 ContatosPos.setUsuarioLogado(usuarioLogado);
-                Snackbar.make(mPasswordView, String.format("Fez login como %s", usuarioLogado.getEmail()), Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(mPasswordView, String.format("Fez login como %s", usuarioLogado.getEmailUsuario()), Snackbar.LENGTH_SHORT).show();
                 goToActivity(ListaContatosActivity.class);
             } else if (usuarioInexistente) {
                 mEmailView.setError(getString(R.string.usuario_inexistente));
@@ -412,10 +407,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         @Override
         protected Boolean doInBackground(Void... voids) {
-            ContatosPos.getCredentials();
+            ContatosPos.getCredentials(getApplicationContext());
             IUsuario contato = null;
             while(contato == null){
-                contato = ContatosPos.getUsuarioLogado();
+                contato = ContatosPos.getUsuarioLogado(getApplicationContext());
             }
 
             return true;

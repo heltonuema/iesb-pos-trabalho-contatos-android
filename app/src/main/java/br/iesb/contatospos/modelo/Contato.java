@@ -70,7 +70,7 @@ public class Contato extends RealmObject implements IContato {
     }
 
     public void setTelefone(String telefone) {
-        this.telefone = new String(telefone);
+        this.telefone = telefone;
     }
 
 }

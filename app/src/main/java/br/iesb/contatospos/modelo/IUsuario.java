@@ -5,16 +5,27 @@ package br.iesb.contatospos.modelo;
  */
 public interface IUsuario {
 
+    //TODO excluir apos os testes
     String getNome();
     String getSobrenome();
-    String getEmail();
     String getUriFoto();
-    String getFacebookId();
 
+    String getContatoUsuario();
+    String getEmailUsuario();
+    String getFacebookId();
+    String getSenha();
+    double getUltimaLatitude();
+    double getUltimaLongitude();
+
+    //TODO excluir apos os testes
     void setNome(String nome);
     void setSobrenome(String sobrenome);
-    void setEmail(String email);
     void setUriFoto(String uriFoto);
-    void setFacebookId(String facebookId);
 
+    void setEmailUsuario(String email);
+    void setFacebookId(String facebookId);
+    void setContatoUsuario(String uuidContato);
+    void setSenha(String senha);
+    void setUltimaLatitude(double latitude);
+    void setUltimaLongitude(double longitude);
 }

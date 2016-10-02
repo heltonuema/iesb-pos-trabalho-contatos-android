@@ -51,6 +51,10 @@ public class InputUtils {
         return retorno;
     }
 
+    public static boolean notNullOrEmpty(final String string){
+        return string != null && !string.isEmpty();
+    }
+
     public static List<Contato> getContatosDaBaseDeDados(){
 
         List<Contato> retorno = null;

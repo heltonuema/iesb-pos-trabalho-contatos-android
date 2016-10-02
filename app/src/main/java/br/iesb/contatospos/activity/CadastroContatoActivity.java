@@ -42,7 +42,7 @@ import br.iesb.contatospos.dao.ContatoDAO;
 import br.iesb.contatospos.modelo.IContato;
 
 
-public class CadastroContatoActivity extends AppCompatActivity implements IContato{
+public class CadastroContatoActivity extends AppCompatActivity implements IContato {
 
     private EditText edtNome;
     private EditText edtSobrenome;
@@ -81,12 +81,11 @@ public class CadastroContatoActivity extends AppCompatActivity implements IConta
 
     }
 
-    protected File criaArquivoParaImagem() throws IOException {
+    public static File criaArquivoParaImagem(final Context context) throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
-        File fotosDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File fotosDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File foto = File.createTempFile(imageFileName, ".jpg", fotosDir);
-        fotoPath = foto.getAbsolutePath();
         return foto;
     }
 
@@ -118,7 +117,7 @@ public class CadastroContatoActivity extends AppCompatActivity implements IConta
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_add_novo_contato, menu);
 
-        if (! "Contato - Editar".equals(getSupportActionBar().getTitle())) {
+        if (!"Contato - Editar".equals(getSupportActionBar().getTitle())) {
             MenuItem menuItem = menu.getItem(1);
             menuItem.setEnabled(false);
         }
@@ -144,13 +143,12 @@ public class CadastroContatoActivity extends AppCompatActivity implements IConta
     }
 
     private void salvaContato() {
-        try (ContatoDAO contatoDAO = new ContatoDAO()) {
-            contatoDAO.novoContato(this);
-            Toast.makeText(this, "Contato salvo", Toast.LENGTH_SHORT).show();
-            setResult(RESULT_OK, null);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+        ContatoDAO contatoDAO = new ContatoDAO();
+        contatoDAO.incluiOuAltera(this);
+        Toast.makeText(this, "Contato salvo", Toast.LENGTH_SHORT).show();
+        setResult(RESULT_OK, null);
+
         finish();
     }
 
@@ -167,7 +165,8 @@ public class CadastroContatoActivity extends AppCompatActivity implements IConta
                 File fotoContato = null;
 
                 try {
-                    fotoContato = criaArquivoParaImagem();
+                    fotoContato = criaArquivoParaImagem(this);
+                    fotoPath = fotoContato.getAbsolutePath();
                 } catch (IOException e) {
                     e.printStackTrace();
                     return;
