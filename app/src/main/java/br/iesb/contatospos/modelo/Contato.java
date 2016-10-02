@@ -16,7 +16,7 @@ public class Contato extends RealmObject implements IContato {
     private String id;
 
     private String nome;
-
+    private String sobrenome;
     private String email;
     private String telefone;
     private String uriFoto;
@@ -33,6 +33,16 @@ public class Contato extends RealmObject implements IContato {
 
 
         return uriFoto;
+    }
+
+    @Override
+    public String getSobrenome() {
+        return sobrenome;
+    }
+
+    @Override
+    public void setSobrenome(String sobrenome) {
+        this.sobrenome = sobrenome;
     }
 
     public void setUriFoto(final String uri){

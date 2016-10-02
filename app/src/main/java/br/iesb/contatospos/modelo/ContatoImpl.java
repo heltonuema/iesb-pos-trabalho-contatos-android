@@ -8,7 +8,7 @@ public class ContatoImpl implements IContato {
     private String id;
 
     private String nome;
-
+    private String sobrenome;
     private String email;
     private String telefone;
     private String uriFoto;
@@ -19,6 +19,16 @@ public class ContatoImpl implements IContato {
         this.email = contato.getEmail();
         this.telefone = contato.getTelefone();
         this.uriFoto = contato.getUriFoto();
+    }
+
+    @Override
+    public String getSobrenome() {
+        return sobrenome;
+    }
+
+    @Override
+    public void setSobrenome(String sobrenome) {
+        this.sobrenome = sobrenome;
     }
 
     public void setId(final String id){

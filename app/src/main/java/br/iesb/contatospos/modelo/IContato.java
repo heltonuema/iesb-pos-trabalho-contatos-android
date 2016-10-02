@@ -17,6 +17,10 @@ public interface IContato {
 
     void setNome(String nome);
 
+    String getSobrenome();
+
+    void setSobrenome(String sobrenome);
+
     String getEmail();
 
     void setEmail(String email);
