@@ -41,6 +41,7 @@ public class CadastroUsuarioActivity extends AppCompatActivity {
         vConfirmacao = (AutoCompleteTextView) findViewById(R.id.cadastroConfirmaSenha);
         vTelefone = (AutoCompleteTextView) findViewById(R.id.cadastroTelefone);
 
+
         Toolbar appToolbar = (Toolbar) findViewById(R.id.toolbarAppCadastroUsuario);
         setSupportActionBar(appToolbar);
 
@@ -90,7 +91,7 @@ public class CadastroUsuarioActivity extends AppCompatActivity {
                 realm.beginTransaction();
                 Usuario usuarioPersistido = realm.createObject(Usuario.class);
                 usuarioPersistido.setEmailUsuario(vEmail.getText().toString());
-                usuarioPersistido.setNome(vNome.getText().toString());
+//                usuarioPersistido.setNome(vNome.getText().toString());
                 usuarioPersistido.setSenha(InputUtils.geraMD5(vSenha.getText().toString()));
                 realm.commitTransaction();
                 final Snackbar snackbar = Snackbar.make(vEmail, "Usuario cadastrado com sucesso", Snackbar.LENGTH_SHORT);

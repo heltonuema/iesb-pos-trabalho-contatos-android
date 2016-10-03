@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
@@ -27,29 +28,51 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.UUID;
 
 import br.iesb.contatospos.R;
+import br.iesb.contatospos.application.ContatosPos;
 import br.iesb.contatospos.dao.ContatoDAO;
+import br.iesb.contatospos.exception.EntradaInvalidaException;
 import br.iesb.contatospos.modelo.IContato;
+import br.iesb.contatospos.modelo.Usuario;
+import br.iesb.contatospos.modelo.UsuarioLogado;
+import br.iesb.contatospos.util.InputUtils;
+import io.realm.Realm;
+import io.realm.exceptions.RealmPrimaryKeyConstraintException;
 
 
 public class CadastroContatoActivity extends AppCompatActivity implements IContato {
 
+    public static final int FLAG_FORMULARIO_USUARIO = 1;
+    public static final int FLAG_EDITA_EMAIL = 2;
+    public static final int FLAG_EDITA_CAMPOS = 4;
+    public static final int FLAG_VOLTAR_SUPPORT_BAR = 8;
+    public static final int FLAG_SALVA_CONTATO = 16;
+    public static final int FLAG_HABILITA_EXCLUIR = 32;
+    public static final int FLAG_NOVO_USUARIO = 64;
+
+    private int flags = 0;
+    private String idContato = null;
     private EditText edtNome;
     private EditText edtSobrenome;
     private EditText edtTelefone;
     private EditText edtEmail;
     private ImageView fotoContato;
     private Button btnFoto;
+    private EditText edtSenha;
+    private EditText edtConfirmaSenha;
 
     private String fotoPath;
 
@@ -57,12 +80,18 @@ public class CadastroContatoActivity extends AppCompatActivity implements IConta
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        flags = getIntent().getIntExtra("flags", 0);
+
         setContentView(R.layout.activity_cadastra_novo_contato);
 
-        edtNome = (EditText) findViewById(R.id.cadastroContatoNome);
-        edtSobrenome = (EditText) findViewById(R.id.cadastroContatoSobrenome);
-        edtTelefone = (EditText) findViewById(R.id.cadastroContatoTelefone);
-        edtEmail = (EditText) findViewById(R.id.cadastroContatoEmail);
+        edtNome = (EditText) habilitaEdicao(findViewById(R.id.cadastroContatoNome),
+                FLAG_EDITA_CAMPOS);
+        edtSobrenome = (EditText) habilitaEdicao(findViewById(R.id.cadastroContatoSobrenome),
+                FLAG_EDITA_CAMPOS);
+        edtTelefone = (EditText) habilitaEdicao(findViewById(R.id.cadastroContatoTelefone),
+                FLAG_EDITA_CAMPOS);
+        edtEmail = (EditText) habilitaEdicao(findViewById(R.id.cadastroContatoEmail),
+                FLAG_EDITA_EMAIL);
         fotoContato = (ImageView) findViewById(R.id.fotoCadastroContato);
         btnFoto = (Button) findViewById(R.id.buttonAlterarFoto);
 
@@ -74,19 +103,37 @@ public class CadastroContatoActivity extends AppCompatActivity implements IConta
         });
 
         Toolbar toolBar = (Toolbar) findViewById(R.id.toolbarCadContato);
-        toolBar.setTitle("Contato");
+        if (isOn(FLAG_FORMULARIO_USUARIO)) {
+            edtTelefone.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+            LinearLayout formulario = (LinearLayout) findViewById(R.id.formularioContato);
+            LinearLayout senha = (LinearLayout) getLayoutInflater().
+                    inflate(R.layout.fragment_senha, formulario);
+            edtSenha = (EditText) habilitaEdicao(findViewById(R.id.cadastroUsuarioSenha), FLAG_EDITA_CAMPOS);
+            edtConfirmaSenha = (EditText) habilitaEdicao(findViewById(
+                    R.id.cadastroUsuarioConfirmaSenha), FLAG_EDITA_CAMPOS);
+            toolBar.setTitle("Contato");
+        }
+
         setSupportActionBar(toolBar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(isOn(FLAG_VOLTAR_SUPPORT_BAR));
+        }
+    }
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    private boolean isOn(final int flag) {
+        return (flag & flags) == flag;
+    }
 
+    private View habilitaEdicao(final View view, int flagsView) {
+        view.setEnabled((flagsView & flags) == flagsView);
+        return view;
     }
 
     public static File criaArquivoParaImagem(final Context context) throws IOException {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String timeStamp = SimpleDateFormat.getDateTimeInstance().format(new Date()).replaceAll("\\/", "-");
         String imageFileName = "JPEG_" + timeStamp + "_";
         File fotosDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File foto = File.createTempFile(imageFileName, ".jpg", fotosDir);
-        return foto;
+        return File.createTempFile(imageFileName, ".jpg", fotosDir);
     }
 
     public static Bitmap getRoundedCornerBitmap(Bitmap bitmap) {
@@ -115,9 +162,13 @@ public class CadastroContatoActivity extends AppCompatActivity implements IConta
     public boolean onCreateOptionsMenu(Menu menu) {
 
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_add_novo_contato, menu);
+        if (isOn(FLAG_NOVO_USUARIO)) {
+            inflater.inflate(R.menu.menu_tb_cadastro_usuario, menu);
+        } else {
+            inflater.inflate(R.menu.menu_add_novo_contato, menu);
+        }
 
-        if (!"Contato - Editar".equals(getSupportActionBar().getTitle())) {
+        if (isOn(FLAG_HABILITA_EXCLUIR)) {
             MenuItem menuItem = menu.getItem(1);
             menuItem.setEnabled(false);
         }
@@ -130,13 +181,19 @@ public class CadastroContatoActivity extends AppCompatActivity implements IConta
 
         switch (item.getItemId()) {
             case R.id.menuContatoSalvar:
-
-                salvaContato();
-                Toast.makeText(this, "Contato salvo", Toast.LENGTH_SHORT).show();
+                if (isOn(FLAG_SALVA_CONTATO)) {
+                    salvaContato();
+                    Toast.makeText(this, "Contato salvo", Toast.LENGTH_SHORT).show();
+                    setResult(RESULT_OK, null);
+                }
                 finish();
 
                 break;
-
+            case R.id.cadastrarUsuarioTB:
+                if(isOn(FLAG_NOVO_USUARIO)){
+                    salvaContato();
+                    cadastraUsuario();
+                }
         }
 
         return super.onOptionsItemSelected(item);
@@ -145,11 +202,9 @@ public class CadastroContatoActivity extends AppCompatActivity implements IConta
     private void salvaContato() {
 
         ContatoDAO contatoDAO = new ContatoDAO();
-        contatoDAO.incluiOuAltera(this);
+        UUID uuid = contatoDAO.incluiOuAltera(this);
         Toast.makeText(this, "Contato salvo", Toast.LENGTH_SHORT).show();
-        setResult(RESULT_OK, null);
-
-        finish();
+        this.idContato = uuid.toString();
     }
 
     private void escolherFoto(final Context context) {
@@ -162,7 +217,7 @@ public class CadastroContatoActivity extends AppCompatActivity implements IConta
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
                     PackageManager.PERMISSION_GRANTED) {
 
-                File fotoContato = null;
+                File fotoContato;
 
                 try {
                     fotoContato = criaArquivoParaImagem(this);
@@ -172,13 +227,12 @@ public class CadastroContatoActivity extends AppCompatActivity implements IConta
                     return;
                 }
 
-                if (fotoContato != null) {
 
-                    Uri uriParaFoto = FileProvider.getUriForFile(context,
-                            "br.iesb.contatospos", fotoContato);
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, uriParaFoto);
-                    startActivityForResult(intent, RequestCode.CADASTRO_CONTATO_FOTO);
-                }
+                Uri uriParaFoto = FileProvider.getUriForFile(context,
+                        "br.iesb.contatospos", fotoContato);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, uriParaFoto);
+                startActivityForResult(intent, RequestCode.CADASTRO_CONTATO_FOTO);
+
             } else {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                         RequestCode.REQUEST_WRITE_PERMISSION);
@@ -216,6 +270,67 @@ public class CadastroContatoActivity extends AppCompatActivity implements IConta
         sendBroadcast(mediaScanIntent);
     }
 
+    private void cadastraUsuario() {
+
+        Realm realm = Realm.getDefaultInstance();
+        try {
+            if (edtEmail.getText().toString().isEmpty()) {
+                throw new EntradaInvalidaException("E-mail é obrigatório", edtEmail);
+            }
+            if (edtSenha.getText().toString().isEmpty()) {
+                throw new EntradaInvalidaException("Preencha a senha", edtSenha);
+            }
+            if (edtConfirmaSenha.getText().toString().isEmpty()) {
+                throw new EntradaInvalidaException("Confirme a senha", edtConfirmaSenha);
+            }
+            if (!(edtSenha.getText().toString().equals(edtConfirmaSenha.getText().toString()))) {
+                throw new EntradaInvalidaException("As senhas nao conferem", edtSenha);
+            }
+            if (InputUtils.isSenhaValida(edtSenha.getText().toString(), edtEmail.getText().toString(), edtSenha)) {
+
+                realm.beginTransaction();
+                Usuario usuarioPersistido = realm.createObject(Usuario.class);
+                usuarioPersistido.setEmailUsuario(edtEmail.getText().toString());
+//                usuarioPersistido.setNome(vNome.getText().toString());
+                usuarioPersistido.setSenha(InputUtils.geraMD5(edtSenha.getText().toString()));
+                usuarioPersistido.setContatoUsuario(idContato);
+                realm.commitTransaction();
+                ContatosPos.setUsuarioLogado(new UsuarioLogado(usuarioPersistido));
+                final Snackbar snackbar = Snackbar.make(edtEmail, "Usuario cadastrado com sucesso", Snackbar.LENGTH_INDEFINITE);
+                snackbar.setAction("Continuar", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        snackbar.dismiss();
+                        irParaActivityPrincipal();
+                    }
+                });
+                snackbar.show();
+            }
+
+        } catch (EntradaInvalidaException e) {
+            if (e.getAutoCompleteTextView() != null) {
+                e.getAutoCompleteTextView().setError(e.getLocalizedMessage());
+            } else {
+                Snackbar.make(edtEmail, e.getLocalizedMessage(), Snackbar.LENGTH_SHORT).show();
+            }
+        } catch (RealmPrimaryKeyConstraintException e) {
+            e.printStackTrace();
+            Snackbar.make(edtEmail, e.getLocalizedMessage().replace("Value already exists:", "Usuário já existente:"), Snackbar.LENGTH_SHORT).show();
+        } finally {
+            if (realm.isInTransaction()) {
+                Toast.makeText(this, "Cancelando transação", Toast.LENGTH_SHORT).show();
+                realm.cancelTransaction();
+            }
+        }
+    }
+
+    private void irParaActivityPrincipal() {
+        Intent intent = new Intent(this, ListaContatosActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        startActivity(intent);
+        finish();
+    }
 
     public static void setPic(final ImageView fotoContato, final String fotoPath) {
 
@@ -266,12 +381,12 @@ public class CadastroContatoActivity extends AppCompatActivity implements IConta
 
     @Override
     public void setId(String id) {
-
+        this.idContato = id;
     }
 
     @Override
     public String getId() {
-        return null;
+        return this.idContato;
     }
 
     @Override

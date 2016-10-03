@@ -59,7 +59,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private View mLoginFormView;
     private LoginButton loginButtonFacebook;
     private CallbackManager callbackManager;
-    private Button criarConta;
     private AfterFacebookLogin afterFacebookLogin;
 
     @Override
@@ -89,8 +88,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mEmailView.setNextFocusForwardId(R.id.password);
         mEmailView.setNextFocusDownId(R.id.password);
 
-        criarConta = (Button) findViewById(R.id.criar_conta);
-        criarConta.setOnClickListener(this);
+        findViewById(R.id.criar_conta).setOnClickListener(this);
 
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -313,12 +311,22 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 showProgress(true);
                 break;
             case R.id.criar_conta:
-                Intent intent = new Intent(this, CadastroUsuarioActivity.class);
-                startActivityForResult(intent, 0);
+                goToCadastroContatoActivity();
                 break;
         }
     }
 
+    private void goToCadastroContatoActivity(){
+        Intent intent = new Intent(this, CadastroContatoActivity.class);
+        intent.putExtra("flags",
+                CadastroContatoActivity.FLAG_EDITA_CAMPOS |
+                CadastroContatoActivity.FLAG_EDITA_EMAIL |
+                CadastroContatoActivity.FLAG_FORMULARIO_USUARIO |
+                CadastroContatoActivity.FLAG_NOVO_USUARIO|
+                CadastroContatoActivity.FLAG_SALVA_CONTATO);
+        startActivity(intent);
+        finish();
+    }
     /**
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
@@ -342,7 +350,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             try (Realm realm = Realm.getDefaultInstance()) {
                 RealmQuery<Usuario> query = realm.where(Usuario.class);
 
-                query.equalTo("email", mEmail);
+                query.equalTo("emailUsuario", mEmail);
                 RealmResults<Usuario> results = query.findAll();
 
                 if (results.size() == 0) {

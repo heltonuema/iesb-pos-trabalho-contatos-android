@@ -35,10 +35,10 @@ import io.realm.RealmResults;
 public class ListaContatosActivity extends AppCompatActivity implements View.OnClickListener, IContatoFragment.OnListFragmentInteractionListener, IMensagemFragment.OnListFragmentInteractionListener {
 
     private FloatingActionButton addNovoContato;
-//    private EditText pesquisa;
+    //    private EditText pesquisa;
     private Realm realm;
     private RealmResults<Contato> contatos;
-//    private ListView listContatos;
+    //    private ListView listContatos;
     private ArrayAdapter<String> adpcontatos;
     private EditText searchField;
     private ImageView searchIcon;
@@ -81,7 +81,7 @@ public class ListaContatosActivity extends AppCompatActivity implements View.OnC
 
         tabLayout = (TabLayout) findViewById(R.id.tabsListaContatos);
 
-        if(tabLayout != null) {
+        if (tabLayout != null) {
             tabLayout.setupWithViewPager(mainPager);
         }
 
@@ -114,11 +114,13 @@ public class ListaContatosActivity extends AppCompatActivity implements View.OnC
     @Override
     public void onClick(View v) {
 
-        switch(v.getId()){
+        switch (v.getId()) {
             case R.id.addcontato:
-                if(tabLayout.getSelectedTabPosition() == 0 ) {
+                if (tabLayout.getSelectedTabPosition() == 0) {
                     Intent intent = new Intent(this, CadastroContatoActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                    intent.putExtra("flags", CadastroContatoActivity.FLAG_EDITA_CAMPOS |
+                            CadastroContatoActivity.FLAG_EDITA_EMAIL);
                     startActivityForResult(intent, RequestCode.ANY_ACTION);
                 }
                 break;
@@ -139,8 +141,8 @@ public class ListaContatosActivity extends AppCompatActivity implements View.OnC
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == RequestCode.LISTA_BLUTOOTH){
-            if(resultCode == RESULT_OK){
+        if (requestCode == RequestCode.LISTA_BLUTOOTH) {
+            if (resultCode == RESULT_OK) {
                 String dispostivo = data.getStringExtra("dispositivo");
                 final Snackbar snackbar = Snackbar.make(addNovoContato, String.format("Dispositivo selecionado: %s", dispostivo), Snackbar.LENGTH_INDEFINITE);
                 snackbar.setAction("OK", new View.OnClickListener() {

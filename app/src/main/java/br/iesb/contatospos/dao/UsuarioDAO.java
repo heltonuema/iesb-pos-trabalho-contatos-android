@@ -33,7 +33,6 @@ public class UsuarioDAO {
                     usuario.setSenha(iUsuario.getSenha());
                     usuario.setContatoUsuario(iUsuario.getContatoUsuario());
                     usuario.setFacebookId(iUsuario.getFacebookId());
-                    usuario.setNome(iUsuario.getNome());
 
                     realm.copyToRealmOrUpdate(usuario);
                 }
