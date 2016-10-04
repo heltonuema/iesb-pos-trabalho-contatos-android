@@ -1,6 +1,9 @@
 package br.iesb.contatospos.dao;
 
-import br.iesb.contatospos.application.ContatosPos;
+import java.util.UUID;
+
+import br.iesb.contatospos.modelo.Contato;
+import br.iesb.contatospos.modelo.IContato;
 import br.iesb.contatospos.modelo.IUsuario;
 import br.iesb.contatospos.modelo.Usuario;
 import br.iesb.contatospos.util.InputUtils;
@@ -14,26 +17,45 @@ import io.realm.RealmResults;
 
 public class UsuarioDAO {
 
-    public String incluiOuAltera(final IUsuario iUsuario) {
+    public String incluiOuAltera(final IUsuario iUsuario, final IContato iContato) {
 
         String retorno = iUsuario.getEmailUsuario();
 
-        if(!InputUtils.notNullOrEmpty(retorno)){
+        if (!InputUtils.notNullOrEmpty(retorno)) {
             throw new IllegalArgumentException("E-mail é obrigatório para usuário");
         }
 
 
-        try(Realm realm = Realm.getDefaultInstance()) {
+        try (Realm realm = Realm.getDefaultInstance()) {
             realm.executeTransaction(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
 
+                    final UUID uuid = (iUsuario.getContatoUsuario() != null) ? UUID.fromString(iUsuario.getContatoUsuario()) : UUID.randomUUID();
+                    if (iContato != null) {
+                        Contato contato = null;
+                        if (InputUtils.notNullOrEmpty(iContato.getId())) {
+                            RealmQuery<Contato> query = realm.where(Contato.class);
+                            query.equalTo("id", iContato.getId());
+                            contato = query.findAll().first();
+                        }
+                        if (contato == null) {
+                            contato = new Contato();
+                        }
+                        contato.setId(uuid.toString());
+                        contato.setNome(iContato.getNome());
+                        contato.setSobrenome(iContato.getSobrenome());
+                        contato.setUriFoto(iContato.getUriFoto());
+                        contato.setEmail(iContato.getEmail());
+                        contato.setTelefone(iContato.getTelefone());
+                        realm.copyToRealmOrUpdate(contato);
+                    }
+
                     Usuario usuario = new Usuario();
                     usuario.setEmailUsuario(iUsuario.getEmailUsuario());
                     usuario.setSenha(iUsuario.getSenha());
-                    usuario.setContatoUsuario(iUsuario.getContatoUsuario());
+                    usuario.setContatoUsuario(uuid.toString());
                     usuario.setFacebookId(iUsuario.getFacebookId());
-
                     realm.copyToRealmOrUpdate(usuario);
                 }
             });

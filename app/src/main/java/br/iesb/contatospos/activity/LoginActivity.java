@@ -174,12 +174,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void cadastrar(final String email) {
-
-        goToActivity(CadastroUsuarioActivity.class, "email,".concat(email));
-
-    }
-
     private void populateAutoComplete() {
 
         if (realm != null) {
@@ -386,7 +380,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 goToActivity(ListaContatosActivity.class);
             } else if (usuarioInexistente) {
                 mEmailView.setError(getString(R.string.usuario_inexistente));
-                cadastrar(mEmail);
             } else if(facebookUser){
                 final Snackbar aviso = Snackbar.make(mPasswordView, "Entre novamente com Facebook e edite o perfil definindo uma senha", Snackbar.LENGTH_INDEFINITE);
                 aviso.show();

@@ -129,7 +129,7 @@ public class ContatosPos extends Application {
 
         usuario.setContatoUsuario(retorno);
         UsuarioDAO usuarioDAO = new UsuarioDAO();
-        usuarioDAO.incluiOuAltera(usuario);
+        usuarioDAO.incluiOuAltera(usuario, null);
         ContatosPos.setUsuarioLogado(new UsuarioLogado(usuario));
 
     }

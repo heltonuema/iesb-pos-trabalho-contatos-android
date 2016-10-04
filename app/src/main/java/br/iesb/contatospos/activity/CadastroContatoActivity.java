@@ -44,12 +44,12 @@ import java.util.UUID;
 import br.iesb.contatospos.R;
 import br.iesb.contatospos.application.ContatosPos;
 import br.iesb.contatospos.dao.ContatoDAO;
+import br.iesb.contatospos.dao.UsuarioDAO;
 import br.iesb.contatospos.exception.EntradaInvalidaException;
 import br.iesb.contatospos.modelo.IContato;
 import br.iesb.contatospos.modelo.Usuario;
 import br.iesb.contatospos.modelo.UsuarioLogado;
 import br.iesb.contatospos.util.InputUtils;
-import io.realm.Realm;
 import io.realm.exceptions.RealmPrimaryKeyConstraintException;
 
 
@@ -106,8 +106,7 @@ public class CadastroContatoActivity extends AppCompatActivity implements IConta
         if (isOn(FLAG_FORMULARIO_USUARIO)) {
             edtTelefone.setImeOptions(EditorInfo.IME_ACTION_NEXT);
             LinearLayout formulario = (LinearLayout) findViewById(R.id.formularioContato);
-            LinearLayout senha = (LinearLayout) getLayoutInflater().
-                    inflate(R.layout.fragment_senha, formulario);
+            getLayoutInflater().inflate(R.layout.fragment_senha, formulario);
             edtSenha = (EditText) habilitaEdicao(findViewById(R.id.cadastroUsuarioSenha), FLAG_EDITA_CAMPOS);
             edtConfirmaSenha = (EditText) habilitaEdicao(findViewById(
                     R.id.cadastroUsuarioConfirmaSenha), FLAG_EDITA_CAMPOS);
@@ -130,7 +129,7 @@ public class CadastroContatoActivity extends AppCompatActivity implements IConta
     }
 
     public static File criaArquivoParaImagem(final Context context) throws IOException {
-        String timeStamp = SimpleDateFormat.getDateTimeInstance().format(new Date()).replaceAll("\\/", "-");
+        String timeStamp = SimpleDateFormat.getDateTimeInstance().format(new Date()).replaceAll("/", "-");
         String imageFileName = "JPEG_" + timeStamp + "_";
         File fotosDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         return File.createTempFile(imageFileName, ".jpg", fotosDir);
@@ -191,7 +190,6 @@ public class CadastroContatoActivity extends AppCompatActivity implements IConta
                 break;
             case R.id.cadastrarUsuarioTB:
                 if(isOn(FLAG_NOVO_USUARIO)){
-                    salvaContato();
                     cadastraUsuario();
                 }
         }
@@ -272,8 +270,11 @@ public class CadastroContatoActivity extends AppCompatActivity implements IConta
 
     private void cadastraUsuario() {
 
-        Realm realm = Realm.getDefaultInstance();
+//        Realm realm = Realm.getDefaultInstance();
         try {
+            if (edtNome.getText().toString().isEmpty()){
+                throw new EntradaInvalidaException("Informe o nome", edtNome);
+            }
             if (edtEmail.getText().toString().isEmpty()) {
                 throw new EntradaInvalidaException("E-mail é obrigatório", edtEmail);
             }
@@ -288,13 +289,17 @@ public class CadastroContatoActivity extends AppCompatActivity implements IConta
             }
             if (InputUtils.isSenhaValida(edtSenha.getText().toString(), edtEmail.getText().toString(), edtSenha)) {
 
-                realm.beginTransaction();
-                Usuario usuarioPersistido = realm.createObject(Usuario.class);
+                UsuarioDAO usuarioDAO = new UsuarioDAO();
+
+                if(usuarioDAO.findUsuarioOnRealm("emailUsuario", edtEmail.getText().toString()) != null){
+                    throw new RealmPrimaryKeyConstraintException("Valuel already exists: " + edtEmail.getText().toString());
+                }
+                Usuario usuarioPersistido = new Usuario();
                 usuarioPersistido.setEmailUsuario(edtEmail.getText().toString());
-//                usuarioPersistido.setNome(vNome.getText().toString());
                 usuarioPersistido.setSenha(InputUtils.geraMD5(edtSenha.getText().toString()));
                 usuarioPersistido.setContatoUsuario(idContato);
-                realm.commitTransaction();
+                new UsuarioDAO().incluiOuAltera(usuarioPersistido, this);
+
                 ContatosPos.setUsuarioLogado(new UsuarioLogado(usuarioPersistido));
                 final Snackbar snackbar = Snackbar.make(edtEmail, "Usuario cadastrado com sucesso", Snackbar.LENGTH_INDEFINITE);
                 snackbar.setAction("Continuar", new View.OnClickListener() {
@@ -316,11 +321,6 @@ public class CadastroContatoActivity extends AppCompatActivity implements IConta
         } catch (RealmPrimaryKeyConstraintException e) {
             e.printStackTrace();
             Snackbar.make(edtEmail, e.getLocalizedMessage().replace("Value already exists:", "Usuário já existente:"), Snackbar.LENGTH_SHORT).show();
-        } finally {
-            if (realm.isInTransaction()) {
-                Toast.makeText(this, "Cancelando transação", Toast.LENGTH_SHORT).show();
-                realm.cancelTransaction();
-            }
         }
     }
 
