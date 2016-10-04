@@ -8,10 +8,12 @@ import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -47,7 +49,7 @@ public class ListaBluetoothActivity extends AppCompatActivity {
         listView = (ListView) findViewById(R.id.lista_bluetooth);
         mProgressView = (ProgressBar) findViewById(R.id.progressBluetooth);
         arrayAdapter = new ArrayAdapter<String>(this, R.layout.text_view_bluetooth);
-        showProgress(true);
+
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter == null) {
             Toast.makeText(this, "Dispositivo não possui bluetooth", Toast.LENGTH_LONG);
@@ -55,6 +57,8 @@ public class ListaBluetoothActivity extends AppCompatActivity {
         } else {
             if (mBluetoothAdapter.isEnabled()) {
                 exibeDispositivos();
+                descoberta();
+                mBluetoothAdapter.startDiscovery();
             }else{
                 Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 intent.putExtra(BluetoothAdapter.EXTRA_LOCAL_NAME, "IESB Social");
@@ -113,12 +117,34 @@ public class ListaBluetoothActivity extends AppCompatActivity {
     }
 
     private void descoberta(){
+
         final BroadcastReceiver receiver = new BroadcastReceiver() {
+
             @Override
             public void onReceive(Context context, Intent intent) {
-
+                String action = intent.getAction();
+                if(BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)){
+                    showProgress(true);
+                } else if(BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)){
+                    showProgress(false);
+                    unregisterReceiver(this);
+                } else if(BluetoothDevice.ACTION_FOUND.equals(action)){
+                    BluetoothDevice device = (BluetoothDevice) intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                    String deviceName = device.getName();
+                    if(deviceName != null) {
+                        Log.i("Device name: ", deviceName);
+                        arrayAdapter.add(device.getName());
+                    }else{
+                        Log.i("Device name NULL: ", String.valueOf(device.getType()));
+                    }
+                }
             }
         };
+
+        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+        registerReceiver(receiver, filter);
     }
 
 }
