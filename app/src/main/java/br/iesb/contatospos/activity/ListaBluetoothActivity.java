@@ -1,5 +1,7 @@
 package br.iesb.contatospos.activity;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -7,13 +9,12 @@ import android.content.Intent;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.ListViewCompat;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.util.Set;
@@ -22,7 +23,9 @@ import br.iesb.contatospos.R;
 
 public class ListaBluetoothActivity extends AppCompatActivity {
 
+    ProgressBar mProgressView;
     ListView listView;
+    ArrayAdapter<String> arrayAdapter;
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP_MR1)
     @Override
@@ -40,7 +43,9 @@ public class ListaBluetoothActivity extends AppCompatActivity {
         getWindow().setElevation(10.0f);
 
         listView = (ListView) findViewById(R.id.lista_bluetooth);
-
+        mProgressView = (ProgressBar) findViewById(R.id.progressBluetooth);
+        arrayAdapter = new ArrayAdapter<String>(this, R.layout.text_view_bluetooth);
+        showProgress(true);
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter == null) {
             Toast.makeText(this, "Dispositivo não possui bluetooth", Toast.LENGTH_LONG);
@@ -69,13 +74,22 @@ public class ListaBluetoothActivity extends AppCompatActivity {
         }
     }
 
+    private void showProgress(final boolean show){
+        int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+        mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+        mProgressView.animate().setDuration(shortAnimTime).alpha(
+                show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            }
+        });
+    }
+
     private void exibeDispositivos(){
 
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         Set<BluetoothDevice> devices = bluetoothAdapter.getBondedDevices();
-
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, R.layout.text_view_bluetooth);
-
 
         for(BluetoothDevice device : devices){
             arrayAdapter.add(device.getName());
