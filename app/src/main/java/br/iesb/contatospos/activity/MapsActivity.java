@@ -1,5 +1,6 @@
 package br.iesb.contatospos.activity;
 
+
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
@@ -11,8 +12,15 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import br.iesb.contatospos.R;
+import br.iesb.contatospos.application.ContatosPos;
+import br.iesb.contatospos.modelo.IUsuario;
+import br.iesb.contatospos.modelo.Usuario;
+import br.iesb.contatospos.modelo.UsuarioLogado;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+
+    private double latitudeUsuario;
+    private double longitudeUsuario;
 
     private GoogleMap mMap;
 
@@ -24,25 +32,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        UsuarioLogado usuarioLogado = ContatosPos.getUsuarioLogado(this);
+        latitudeUsuario = usuarioLogado.getUltimaLatitude();
+        longitudeUsuario = usuarioLogado.getUltimaLongitude();
     }
 
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
+
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
-        LatLng iesb = new LatLng(-15.834804, -47.912851);
-        mMap.addMarker(new MarkerOptions().position(iesb).title("Marker in IESB"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(iesb, 10));
+        LatLng usuario = new LatLng(latitudeUsuario, longitudeUsuario);
+        mMap.addMarker(new MarkerOptions().position(usuario).title("Minha ultima localizacao"));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(usuario, 16.0f));
     }
 }

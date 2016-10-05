@@ -158,6 +158,7 @@
                         android:hint="@string/prompt_cadastro_telefone"
                         android:imeOptions="actionDone"
                         android:maxLines="1"
+                        android:inputType="phone"
                         android:singleLine="true" />
 
                 </android.support.design.widget.TextInputLayout>
