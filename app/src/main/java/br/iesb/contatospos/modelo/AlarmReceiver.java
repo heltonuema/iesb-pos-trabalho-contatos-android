@@ -8,13 +8,13 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
-
 import com.google.android.gms.maps.model.LatLng;
 
-import br.iesb.contatospos.activity.ListaContatosActivity;
+import br.iesb.contatospos.activity.MapsActivity;
 
 
 public class AlarmReceiver extends BroadcastReceiver {
+
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -24,7 +24,7 @@ public class AlarmReceiver extends BroadcastReceiver {
             Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
             LatLng loc = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
 
-            Intent updateIntent = new Intent(ListaContatosActivity.ALARM_SERVICE);
+            Intent updateIntent = new Intent(MapsActivity.ALARM_RECEIVED_EVENT);
             updateIntent.putExtra("LOC", loc);
             LocalBroadcastManager.getInstance(context).sendBroadcast(updateIntent);
         }
