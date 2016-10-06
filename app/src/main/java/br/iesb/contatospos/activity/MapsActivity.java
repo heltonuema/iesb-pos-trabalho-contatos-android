@@ -75,6 +75,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     };
 
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+
+        mMap = googleMap;
+
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
+            ActivityCompat.requestPermissions( this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, MAP_PERMISSION_ACCESS_COURSE_LOCATION);
+        } else {
+            createAlarm();
+        }
+
+        LatLng usuario = new LatLng(latitudeUsuario, longitudeUsuario);
+
+        if(usuario == null){
+            usuario = loc;
+        }
+
+        mMap.addMarker(new MarkerOptions().position(usuario).title("Minha ultima localizacao!"));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(usuario, 16.0f));
+    }
+
     private void createAlarm() {
         int seconds = 500;
         Intent intent = new Intent(this, AlarmReceiver.class);
@@ -106,31 +127,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         marker = mMap.addMarker(new MarkerOptions().position(loc).title("Minha ultima localizacao!"));
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 16.0f));
-
-        Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        vibrator.vibrate(2000);
     }
 
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-
-        mMap = googleMap;
-
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
-            ActivityCompat.requestPermissions( this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, MAP_PERMISSION_ACCESS_COURSE_LOCATION);
-        } else {
-            createAlarm();
-        }
-
-        LatLng usuario = new LatLng(latitudeUsuario, longitudeUsuario);
-
-        if(usuario == null){
-            usuario = loc;
-        }
-
-        mMap.addMarker(new MarkerOptions().position(usuario).title("Minha ultima localizacao!"));
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(usuario, 16.0f));
-    }
 
 }
 
