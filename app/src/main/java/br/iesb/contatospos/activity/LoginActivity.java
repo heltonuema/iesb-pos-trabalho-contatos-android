@@ -78,7 +78,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
 
         if(ContatosPos.getUsuarioLogado(getApplicationContext()) != null){
-
             goToActivity(ListaContatosActivity.class);
         }
 
@@ -124,8 +123,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     Snackbar.make(mEmailView, "Permissão para ler endereço de e-mail é necessária", Snackbar.LENGTH_SHORT).show();
                 } else {
                     afterFacebookLogin.execute();
-//                    ContatosPos.getCredentials(loginActivity);
-//                    goToActivity(ListaContatosActivity.class, null);
                 }
 
             }
