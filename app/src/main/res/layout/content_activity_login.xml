@@ -77,55 +77,89 @@
             </android.support.design.widget.TextInputLayout>
 
             <LinearLayout
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-            <Button
-                android:id="@+id/criar_conta"
-                style="?android:textAppearanceSmall"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:padding="2dp"
-                android:layout_marginTop="16dp"
-                android:text="@string/criar_conta"
-                android:textStyle="bold" />
+                android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/email_sign_in_button"
-                style="?android:textAppearanceSmall"
-                android:layout_width="wrap_content"
-                android:padding="2dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:backgroundTint="@color/colorAccent"
-                android:text="@string/email_sign_in_button"
-                android:textColor="#FFFFFF"
-                android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/email_sign_in_button"
+                    style="?android:textAppearanceSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorAccent"
+                    android:padding="2dp"
+                    android:text="@string/email_sign_in_button"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold" />
 
             </LinearLayout>
-
 
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="fill_vertical"
-                android:orientation="vertical">
+                android:layout_margin="20dp"
+                android:layout_weight="2"
+                android:gravity="bottom"
+                android:orientation="horizontal">
+
+
+                <Button
+                    android:id="@+id/facebookVisible"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/com_facebook_blue"
+                    android:padding="10dp"
+                    android:text="Facebook"
+                    android:textAlignment="center"
+                    android:textColor="#FFFFFF" />
 
                 <com.facebook.login.widget.LoginButton
                     android:id="@+id/login_button_facebook"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginBottom="30dp"
-                    android:layout_marginTop="60dp" />
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="60dp"
+                    android:visibility="gone" />
 
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="#CC4400"
+                    android:padding="10dp"
+                    android:text="Google"
+                    android:textAlignment="center"
+                    android:textColor="#FFFFFF" />
+
+                <com.google.android.gms.common.SignInButton
+                    android:id="@+id/sign_in_button_google"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:visibility="gone" />
 
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/criar_conta"
+                style="?android:textAppearanceSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_weight="1"
+                android:gravity="bottom"
+                android:padding="2dp"
+                android:text="@string/criar_conta"
+                android:textAlignment="center"
+                android:textStyle="bold" />
+
 
         </LinearLayout>
     </LinearLayout>
