@@ -139,6 +139,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
         });
 
+
         afterFacebookLogin = new AfterFacebookLogin();
 
         showProgress(false);

@@ -49,7 +49,7 @@
     <string name="email_duplicado">Email duplicado</string>
     <string name="login_facebook_cancel">Login com Facebook cancelado</string>
     <string name="facebook_login_fail">Falha no login com Facebook</string>
-    <string name="criar_conta">Criar Conta</string>
+    <string name="criar_conta">Criar uma conta</string>
     <string name="email_sign_in_button">Entrar</string>
     <string name="title_activity_maps">Map</string>
 
