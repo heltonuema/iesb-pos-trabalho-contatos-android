@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -28,6 +29,11 @@ import com.facebook.FacebookException;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,7 +53,7 @@ import io.realm.RealmResults;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener{ //implements LoaderCallbacks<Cursor> {
+public class LoginActivity extends AppCompatActivity implements OnClickListener, GoogleApiClient.OnConnectionFailedListener { //implements LoaderCallbacks<Cursor> {
 
     Realm realm;
     private UserLoginTask mAuthTask = null;
@@ -60,6 +66,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private LoginButton loginButtonFacebook;
     private CallbackManager callbackManager;
     private AfterFacebookLogin afterFacebookLogin;
+    private GoogleApiClient mGoogleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,12 +79,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
 
-        if(toolbar != null) {
+        if (toolbar != null) {
             toolbar.setTitle("Bem-vindo");
             setSupportActionBar(toolbar);
         }
 
-        if(ContatosPos.getUsuarioLogado(getApplicationContext()) != null){
+        if (ContatosPos.getUsuarioLogado(getApplicationContext()) != null) {
             goToActivity(ListaContatosActivity.class);
         }
 
@@ -139,24 +146,51 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
         });
 
+        findViewById(R.id.facebookVisible).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loginButtonFacebook.performClick();
+            }
+        });
 
         afterFacebookLogin = new AfterFacebookLogin();
+
+        setmGoogleApiClient();
 
         showProgress(false);
     }
 
-    public void goToActivity(Class<?> activity, String...extras) {
+    private void setmGoogleApiClient() {
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail().requestProfile()
+                .build();
+
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(this, this).
+                addApi(Auth.GOOGLE_SIGN_IN_API, gso).build();
+
+        findViewById(R.id.signInButtonGoogleVisible).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showProgress(true);
+                Intent intentAuth = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+                startActivityForResult(intentAuth, RequestCode.LOGIN_GOOGLE);
+            }
+        });
+    }
+
+    public void goToActivity(Class<?> activity, String... extras) {
 
         Intent intent = new Intent(this, activity);
 
-        if(extras != null){
-            for(String extra : extras){
-                if(extra.split(",").length < 2){
+        if (extras != null) {
+            for (String extra : extras) {
+                if (extra.split(",").length < 2) {
                     throw new RuntimeException("Esperado chave e valor separado por virgula");
                 }
                 String key = extra.split(",")[0].trim();
                 String value = extra.split(",")[1].trim();
-                intent.putExtra(key,value);
+                intent.putExtra(key, value);
             }
         }
         startActivity(intent);
@@ -166,10 +200,23 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode != RequestCode.ANY_ACTION && resultCode == RESULT_OK){
+        if (requestCode != RequestCode.ANY_ACTION && resultCode == RESULT_OK) {
             showProgress(true);
         }
+        if (requestCode == RequestCode.LOGIN_GOOGLE) {
+            showProgress(false);
+            GoogleSignInResult signInResult = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            if (signInResult.isSuccess()) {
+                Log.i("Given name", signInResult.getSignInAccount().getGivenName());
+                Log.i("Family name", signInResult.getSignInAccount().getFamilyName());
+                Log.i("Email", signInResult.getSignInAccount().getEmail());
+                Log.i("Id", signInResult.getSignInAccount().getId());
+            }else{
+                Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+            }
+        }
         callbackManager.onActivityResult(requestCode, resultCode, data);
+        //1C:2A:99:14:06:A1:14:07:3A:DD:5F:30:7E:CA:69:29:89:D0:E7:9C
     }
 
     private void populateAutoComplete() {
@@ -298,7 +345,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onClick(View view) {
-        switch(view.getId()) {
+        switch (view.getId()) {
             case R.id.login_button_facebook:
                 showProgress(true);
                 break;
@@ -308,17 +355,23 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    private void goToCadastroContatoActivity(){
+    private void goToCadastroContatoActivity() {
         Intent intent = new Intent(this, CadastroContatoActivity.class);
         intent.putExtra("flags",
                 CadastroContatoActivity.FLAG_EDITA_CAMPOS |
-                CadastroContatoActivity.FLAG_EDITA_EMAIL |
-                CadastroContatoActivity.FLAG_FORMULARIO_USUARIO |
-                CadastroContatoActivity.FLAG_NOVO_USUARIO|
-                CadastroContatoActivity.FLAG_SALVA_CONTATO);
+                        CadastroContatoActivity.FLAG_EDITA_EMAIL |
+                        CadastroContatoActivity.FLAG_FORMULARIO_USUARIO |
+                        CadastroContatoActivity.FLAG_NOVO_USUARIO |
+                        CadastroContatoActivity.FLAG_SALVA_CONTATO);
         startActivity(intent);
         finish();
     }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Log.e("Login com Google", connectionResult.getErrorMessage());
+    }
+
     /**
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
@@ -356,7 +409,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                 String pPassword = results.get(0).getSenha();
                 if (pPassword != null && !pPassword.isEmpty()) {
-                    if(pPassword.equals(InputUtils.geraMD5(mPassword))){
+                    if (pPassword.equals(InputUtils.geraMD5(mPassword))) {
                         usuarioLogado = new UsuarioLogado(results.get(0));
                         return true;
                     }
@@ -378,7 +431,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 goToActivity(ListaContatosActivity.class);
             } else if (usuarioInexistente) {
                 mEmailView.setError(getString(R.string.usuario_inexistente));
-            } else if(facebookUser){
+            } else if (facebookUser) {
                 final Snackbar aviso = Snackbar.make(mPasswordView, "Entre novamente com Facebook e edite o perfil definindo uma senha", Snackbar.LENGTH_INDEFINITE);
                 aviso.show();
                 aviso.setAction("OK", new OnClickListener() {
@@ -388,8 +441,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     }
                 });
 
-            } else
-            {
+            } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
             }
@@ -402,13 +454,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    public class AfterFacebookLogin extends AsyncTask<Void, Void, Boolean>{
+    public class AfterFacebookLogin extends AsyncTask<Void, Void, Boolean> {
 
         @Override
         protected Boolean doInBackground(Void... voids) {
             ContatosPos.getCredentials(getApplicationContext());
             IUsuario contato = null;
-            while(contato == null){
+            while (contato == null) {
                 contato = ContatosPos.getUsuarioLogado(getApplicationContext());
             }
 

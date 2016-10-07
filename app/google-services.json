@@ -15,11 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "921043719561-pk36fdftau4bms4ecqlcjo0qs3c38dal.apps.googleusercontent.com",
+          "client_id": "921043719561-tokuer6oaj6s1q0v7lmigtt1ke7rl1pe.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "br.iesb.contatospos",
-            "certificate_hash": "1C2A991406A114073ADD5F307ECA692989D0E79C"
+            "certificate_hash": "4EEBA9BC3F36CCD6333B953725D0A234CAFAEA86"
           }
         },
         {
