@@ -2,6 +2,8 @@ package br.iesb.contatospos.activity;
 
 
 import android.content.IntentFilter;
+import android.location.Location;
+import android.location.LocationManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -25,7 +27,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Vibrator;
 import android.widget.Toast;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -36,6 +37,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private double latitudeUsuario;
     private double longitudeUsuario;
     private LatLng loc;
+    private Location location;
 
     private GoogleMap mMap;
 
@@ -52,6 +54,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         latitudeUsuario = usuarioLogado.getUltimaLatitude();
         longitudeUsuario = usuarioLogado.getUltimaLongitude();
     }
+
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -64,6 +68,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
     }
 
+
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -75,29 +80,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     };
 
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
 
-        mMap = googleMap;
-
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
-            ActivityCompat.requestPermissions( this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, MAP_PERMISSION_ACCESS_COURSE_LOCATION);
-        } else {
-            createAlarm();
-        }
-
-        LatLng usuario = new LatLng(latitudeUsuario, longitudeUsuario);
-
-        if(usuario == null){
-            usuario = loc;
-        }
-
-        mMap.addMarker(new MarkerOptions().position(usuario).title("Minha ultima localizacao!"));
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(usuario, 16.0f));
-    }
 
     private void createAlarm() {
-        int seconds = 500;
+        int seconds = 120;
         Intent intent = new Intent(this, AlarmReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
 
@@ -113,12 +99,45 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             case MAP_PERMISSION_ACCESS_COURSE_LOCATION: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     createAlarm();
+                    break;
                 } else {
                     //Permissão negada
                 }
-                return;
+                break;
+            }
+            case RequestCode.PERMISSAO_LOCALIZACAO:{
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    getLocation();
+                }
             }
         }
+    }
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+
+        mMap = googleMap;
+
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
+            ActivityCompat.requestPermissions( this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, MAP_PERMISSION_ACCESS_COURSE_LOCATION);
+        } else {
+            createAlarm();
+        }
+
+        if(longitudeUsuario == 0 && latitudeUsuario == 0){
+            getLocation();
+            latitudeUsuario =  location.getLatitude();
+            longitudeUsuario = location.getLongitude();
+            LatLng localizacaoAtual = new LatLng(latitudeUsuario, longitudeUsuario);
+            mMap.addMarker(new MarkerOptions().position(localizacaoAtual).title("Minha ultima localizacao!"));
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(localizacaoAtual, 16.0f));
+
+        }else{
+
+            LatLng usuario = new LatLng(latitudeUsuario, longitudeUsuario);
+            mMap.addMarker(new MarkerOptions().position(usuario).title("Minha ultima localizacao!"));
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(usuario, 16.0f));
+        }
+
     }
 
     private void updateMap(LatLng loc) {
@@ -127,6 +146,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         marker = mMap.addMarker(new MarkerOptions().position(loc).title("Minha ultima localizacao!"));
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 16.0f));
+    }
+
+    public Location getLocation() {
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    RequestCode.PERMISSAO_LOCALIZACAO);
+
+        }
+        location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        return location;
     }
 
 
