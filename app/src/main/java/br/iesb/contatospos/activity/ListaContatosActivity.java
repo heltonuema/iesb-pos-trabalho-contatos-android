@@ -120,7 +120,8 @@ public class ListaContatosActivity extends AppCompatActivity implements View.OnC
                     Intent intent = new Intent(this, CadastroContatoActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     intent.putExtra("flags", CadastroContatoActivity.FLAG_EDITA_CAMPOS |
-                            CadastroContatoActivity.FLAG_EDITA_EMAIL);
+                            CadastroContatoActivity.FLAG_EDITA_EMAIL |
+                            CadastroContatoActivity.FLAG_SALVA_CONTATO);
                     startActivityForResult(intent, RequestCode.ANY_ACTION);
                 }
                 break;

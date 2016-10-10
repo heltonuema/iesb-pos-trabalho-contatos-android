@@ -65,7 +65,7 @@ public class ContatoDAO {
             where.equalTo(field, value);
             RealmResults<Contato> contatos = where.findAll();
             if (contatos.size() == 1) {
-                retorno = contatos.first();
+                retorno = ContatosPos.copyFromContato(contatos.first());
             }
         }
         return retorno;

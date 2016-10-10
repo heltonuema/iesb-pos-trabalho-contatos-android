@@ -2,6 +2,7 @@ package br.iesb.contatospos.dao;
 
 import java.util.UUID;
 
+import br.iesb.contatospos.application.ContatosPos;
 import br.iesb.contatospos.modelo.Contato;
 import br.iesb.contatospos.modelo.IContato;
 import br.iesb.contatospos.modelo.IUsuario;
@@ -71,7 +72,7 @@ public class UsuarioDAO {
             where.equalTo(field, value);
             RealmResults<Usuario> usuarios = where.findAll();
             if (usuarios.size() == 1) {
-                retorno = usuarios.first();
+                retorno = ContatosPos.copyFromUsuario(usuarios.first());
             }
         }
         return retorno;
