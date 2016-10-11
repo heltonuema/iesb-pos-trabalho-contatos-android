@@ -43,7 +43,7 @@ import io.realm.RealmResults;
  * Created by Helton on 05/09/16.
  * Garante a incializacao
  */
-public class ContatosPos extends Application implements GoogleApiClient.OnConnectionFailedListener{
+public class ContatosPos extends Application implements GoogleApiClient.OnConnectionFailedListener {
 
     private static UsuarioLogado usuarioLogado;
 
@@ -111,7 +111,7 @@ public class ContatosPos extends Application implements GoogleApiClient.OnConnec
 //            isInTask = true;
 //        }
 
-        if(FirebaseAuth.getInstance().getCurrentUser() != null){
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             try {
                 cadastrarUsuarioFirebase(FirebaseAuth.getInstance().getCurrentUser(), context);
             } catch (IOException e) {
@@ -130,24 +130,31 @@ public class ContatosPos extends Application implements GoogleApiClient.OnConnec
         Contato contatoCadastrado = null;
         if (InputUtils.notNullOrEmpty(usuario.getContatoUsuario())) {
             contatoCadastrado = new ContatoDAO().findContatoOnRealm("id", usuario.getContatoUsuario());
+        } else {
+            contatoCadastrado = new ContatoDAO().findContatoOnRealm("id", firebaseUser.getUid());
         }
 
         final Contato contatoUsuario = (contatoCadastrado != null) ? copyFromContato(contatoCadastrado) : new Contato();
 
         usuario.setEmailUsuario(firebaseUser.getEmail());
         usuario.setFacebookId(firebaseUser.getUid());
-        String[] names = firebaseUser.getDisplayName().split(" ");
-        int posLastName = names.length - 1;
 
-        contatoUsuario.setNome(firebaseUser.getDisplayName().replace(names[posLastName], "").trim());
-        contatoUsuario.setSobrenome(names[posLastName]);
-        contatoUsuario.setEmail(firebaseUser.getEmail());
+        if (firebaseUser.getDisplayName() != null) {
+            String[] names = firebaseUser.getDisplayName().split(" ");
+            int posLastName = names.length - 1;
 
-        cadastroUsuario(contatoUsuario, usuario, context);
+            contatoUsuario.setNome(firebaseUser.getDisplayName().replace(names[posLastName], "").trim());
+            contatoUsuario.setSobrenome(names[posLastName]);
+            contatoUsuario.setEmail(firebaseUser.getEmail());
 
-        String urlFoto = firebaseUser.getPhotoUrl().toString();
-        new CadastroUsuarioFacebook().setContato(contatoUsuario)
-                .setUsuario(usuario).execute(urlFoto);
+            cadastroUsuario(contatoUsuario, usuario, context);
+        }
+
+        if (firebaseUser.getPhotoUrl() != null) {
+            String urlFoto = firebaseUser.getPhotoUrl().toString();
+            new CadastroUsuarioFacebook().setContato(contatoUsuario)
+                    .setUsuario(usuario).execute(urlFoto);
+        }
     }
 
     private static void cadastroUsuario(IContato contatoUsuario, IUsuario usuario, Context context) throws IOException {
@@ -210,7 +217,7 @@ public class ContatosPos extends Application implements GoogleApiClient.OnConnec
             if (usuarioLogado == null && !isInTask) {
                 getCredentials(context);
             }
-        }else if(usuarioLogado == null && FirebaseAuth.getInstance().getCurrentUser() != null){
+        } else if (usuarioLogado == null && FirebaseAuth.getInstance().getCurrentUser() != null) {
             Realm realm = Realm.getDefaultInstance();
             RealmQuery<Usuario> query = realm.where(Usuario.class);
             query.equalTo("facebookId", FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -246,7 +253,7 @@ public class ContatosPos extends Application implements GoogleApiClient.OnConnec
         if (AccessToken.getCurrentAccessToken() != null) {
             LoginManager.getInstance().logOut();
         }
-        if(FirebaseAuth.getInstance().getCurrentUser() != null){
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             FirebaseAuth.getInstance().signOut();
         }
     }

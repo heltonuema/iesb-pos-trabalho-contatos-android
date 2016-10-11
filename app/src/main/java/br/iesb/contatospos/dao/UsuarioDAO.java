@@ -18,21 +18,29 @@ import io.realm.RealmResults;
 
 public class UsuarioDAO {
 
+    private String uidFirebase;
+
+    public UsuarioDAO setUidFirebase(final String uidFirebase){
+        this.uidFirebase = uidFirebase;
+        return this;
+    }
+
     public String incluiOuAltera(final IUsuario iUsuario, final IContato iContato) {
 
         String retorno = iUsuario.getEmailUsuario();
 
+        final String uidFirebase = null;
+
         if (!InputUtils.notNullOrEmpty(retorno)) {
             throw new IllegalArgumentException("E-mail é obrigatório para usuário");
         }
-
 
         try (Realm realm = Realm.getDefaultInstance()) {
             realm.executeTransaction(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
 
-                    final UUID uuid = (iUsuario.getContatoUsuario() != null) ? UUID.fromString(iUsuario.getContatoUsuario()) : UUID.randomUUID();
+                    final String uuid = (uidFirebase != null) ? uidFirebase : getUid(iUsuario);
                     if (iContato != null) {
                         Contato contato = null;
                         if (InputUtils.notNullOrEmpty(iContato.getId())) {
@@ -43,7 +51,7 @@ public class UsuarioDAO {
                         if (contato == null) {
                             contato = new Contato();
                         }
-                        contato.setId(uuid.toString());
+                        contato.setId(uuid);
                         contato.setNome(iContato.getNome());
                         contato.setSobrenome(iContato.getSobrenome());
                         contato.setUriFoto(iContato.getUriFoto());
@@ -62,6 +70,10 @@ public class UsuarioDAO {
             });
         }
         return retorno;
+    }
+
+    private String getUid(final IUsuario iUsuario){
+        return ((iUsuario.getContatoUsuario() != null) ? UUID.fromString(iUsuario.getContatoUsuario()) : UUID.randomUUID()).toString();
     }
 
     public Usuario findUsuarioOnRealm(final String field, final String value) {

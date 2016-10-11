@@ -471,6 +471,19 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
                 if (pPassword != null && !pPassword.isEmpty()) {
                     if (pPassword.equals(InputUtils.geraMD5(mPassword))) {
                         usuarioLogado = new UsuarioLogado(results.get(0));
+
+                        final FirebaseAuth mAuth = FirebaseAuth.getInstance();
+                        mAuth.signInWithEmailAndPassword(mEmail, mPassword)
+                                .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<AuthResult> task) {
+                                        if(!task.isSuccessful()){
+                                            Toast.makeText(LoginActivity.this, "Login com Firebase falhou", Toast.LENGTH_LONG).show();
+                                            finish();
+                                        }
+                                    }
+                                });
+
                         return true;
                     }
                 } else {
@@ -526,6 +539,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 
         @Override
         protected Boolean doInBackground(Void... voids) {
+
             final HoldBoolean retorno = new HoldBoolean();
             final AuthCredential credential = FacebookAuthProvider.getCredential(AccessToken.getCurrentAccessToken().getToken());
             mFirebaseAuth.signInWithCredential(credential)

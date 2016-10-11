@@ -40,6 +40,11 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.io.File;
 import java.io.IOException;
@@ -317,22 +322,54 @@ public class CadastroContatoActivity extends AppCompatActivity implements IConta
                 if(usuarioDAO.findUsuarioOnRealm("emailUsuario", edtEmail.getText().toString()) != null){
                     throw new RealmPrimaryKeyConstraintException("Valuel already exists: " + edtEmail.getText().toString());
                 }
-                Usuario usuarioPersistido = new Usuario();
-                usuarioPersistido.setEmailUsuario(edtEmail.getText().toString());
-                usuarioPersistido.setSenha(InputUtils.geraMD5(edtSenha.getText().toString()));
-                usuarioPersistido.setContatoUsuario(idContato);
-                new UsuarioDAO().incluiOuAltera(usuarioPersistido, this);
+                final Usuario usuarioPersistido = new Usuario();
+//                new UsuarioDAO().incluiOuAltera(usuarioPersistido, this);
+//                usuarioPersistido.setEmailUsuario(edtEmail.getText().toString());
+//                usuarioPersistido.setSenha(InputUtils.geraMD5(edtSenha.getText().toString()));
+//                usuarioPersistido.setContatoUsuario(idContato);
+//
+//                ContatosPos.setUsuarioLogado(new UsuarioLogado(usuarioPersistido));
+//                final Snackbar snackbar = Snackbar.make(edtEmail, "Usuario cadastrado com sucesso", Snackbar.LENGTH_INDEFINITE);
+//                snackbar.setAction("Continuar", new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        snackbar.dismiss();
+//                        irParaActivityPrincipal();
+//                    }
+//                });
+//                snackbar.show();
 
-                ContatosPos.setUsuarioLogado(new UsuarioLogado(usuarioPersistido));
-                final Snackbar snackbar = Snackbar.make(edtEmail, "Usuario cadastrado com sucesso", Snackbar.LENGTH_INDEFINITE);
-                snackbar.setAction("Continuar", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        snackbar.dismiss();
-                        irParaActivityPrincipal();
-                    }
-                });
-                snackbar.show();
+                FirebaseAuth mAuth = FirebaseAuth.getInstance();
+                mAuth.createUserWithEmailAndPassword(edtEmail.getText().toString(), edtSenha.getText().toString())
+                        .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if(task.isSuccessful()){
+                                    final Usuario usuarioPersistido = new Usuario();
+                                    usuarioPersistido.setEmailUsuario(edtEmail.getText().toString());
+                                    usuarioPersistido.setSenha(InputUtils.geraMD5(edtSenha.getText().toString()));
+                                    usuarioPersistido.setContatoUsuario(idContato);
+                                    new UsuarioDAO().setUidFirebase(task.getResult().getUser().getUid())
+                                            .incluiOuAltera(usuarioPersistido, CadastroContatoActivity.this);
+
+                                    ContatosPos.setUsuarioLogado(new UsuarioLogado(usuarioPersistido));
+                                    final Snackbar snackbar = Snackbar.make(edtEmail, "Usuario cadastrado com sucesso", Snackbar.LENGTH_INDEFINITE);
+                                    snackbar.setAction("Continuar", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            snackbar.dismiss();
+                                            irParaActivityPrincipal();
+                                        }
+                                    });
+                                    snackbar.show();
+                                }else{
+                                    Toast.makeText(CadastroContatoActivity.this, "Cadastro no Firebase falhou", Toast.LENGTH_LONG).show();
+                                    finish();
+                                }
+                            }
+                        });
+
+
             }
 
         } catch (EntradaInvalidaException e) {
