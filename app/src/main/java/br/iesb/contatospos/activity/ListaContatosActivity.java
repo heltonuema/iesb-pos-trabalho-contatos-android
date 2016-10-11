@@ -1,7 +1,10 @@
 package br.iesb.contatospos.activity;
 
 import android.content.Intent;
+import android.graphics.drawable.Icon;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -18,8 +21,10 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
+import com.google.gson.Gson;
 
 import br.iesb.contatospos.R;
 import br.iesb.contatospos.application.ContatosPos;
@@ -29,6 +34,7 @@ import br.iesb.contatospos.fragment.ListaContatoPagerAdapter;
 import br.iesb.contatospos.fragment.dummy.DummyContent;
 import br.iesb.contatospos.fragment.dummy.DummyContentContato;
 import br.iesb.contatospos.modelo.Contato;
+import br.iesb.contatospos.modelo.ContatoImpl;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -84,13 +90,14 @@ public class ListaContatosActivity extends AppCompatActivity implements View.OnC
 
                 }
 
+                @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
                 @Override
                 public void onPageSelected(int position) {
                     Log.i("page", String.valueOf(position));
                     if(position == 1){
-                        addNovoContato.hide();
+                        addNovoContato.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_send, addNovoContato.getContext().getTheme()));
                     }else {
-                        addNovoContato.show();
+                        addNovoContato.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_name_add, addNovoContato.getContext().getTheme()));
                     }
                 }
 
@@ -116,7 +123,11 @@ public class ListaContatosActivity extends AppCompatActivity implements View.OnC
 
     @Override
     public void onListFragmentInteraction(Contato item) {
-
+        Toast.makeText(this, "Contato: " + item.getEmail(), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, CadastroContatoActivity.class);
+        ContatoImpl contatoItem = new ContatoImpl(item);
+        intent.putExtra("contato", new Gson().toJson(contatoItem));
+        startActivity(intent);
     }
 
     @Override

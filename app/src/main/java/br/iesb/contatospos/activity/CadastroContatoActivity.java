@@ -45,6 +45,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,6 +59,8 @@ import br.iesb.contatospos.application.ContatosPos;
 import br.iesb.contatospos.dao.ContatoDAO;
 import br.iesb.contatospos.dao.UsuarioDAO;
 import br.iesb.contatospos.exception.EntradaInvalidaException;
+import br.iesb.contatospos.modelo.Contato;
+import br.iesb.contatospos.modelo.ContatoImpl;
 import br.iesb.contatospos.modelo.IContato;
 import br.iesb.contatospos.modelo.Usuario;
 import br.iesb.contatospos.modelo.UsuarioLogado;
@@ -127,6 +131,23 @@ public class CadastroContatoActivity extends AppCompatActivity implements IConta
         setSupportActionBar(toolBar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(isOn(FLAG_VOLTAR_SUPPORT_BAR));
+        }
+
+        String contato = getIntent().getStringExtra("contato");
+        if(InputUtils.notNullOrEmpty(contato)){
+            preencheDadosContato(contato);
+        }
+    }
+
+    private void preencheDadosContato(final String contato) {
+        Contato contatoImpl = new Gson().fromJson(contato, Contato.class);
+        idContato = contatoImpl.getId();
+        edtEmail.setText(contatoImpl.getEmail());
+        edtNome.setText(contatoImpl.getNome());
+        edtSobrenome.setText(contatoImpl.getSobrenome());
+        edtTelefone.setText(contatoImpl.getTelefone());
+        if(InputUtils.notNullOrEmpty(contatoImpl.getUriFoto())){
+            setPic(fotoContato, contatoImpl.getUriFoto());
         }
     }
 
