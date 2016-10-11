@@ -17,6 +17,7 @@ import java.util.List;
  * specified {@link OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
+
 public class MyIMensagemRecyclerViewAdapter extends RecyclerView.Adapter<MyIMensagemRecyclerViewAdapter.ViewHolder> {
 
     private final List<DummyItem> mValues;
@@ -30,7 +31,7 @@ public class MyIMensagemRecyclerViewAdapter extends RecyclerView.Adapter<MyIMens
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_imensagem, parent, false);
+                .inflate(R.layout.fragment_mensagem_firebase, parent, false);
         return new ViewHolder(view);
     }
 

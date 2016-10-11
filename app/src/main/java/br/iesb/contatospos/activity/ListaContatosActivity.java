@@ -10,6 +10,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -77,6 +78,27 @@ public class ListaContatosActivity extends AppCompatActivity implements View.OnC
         mainPager = (ViewPager) findViewById(R.id.pagerListaContatos);
         if (mainPager != null) {
             setUpPager(mainPager);
+            mainPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                @Override
+                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+                }
+
+                @Override
+                public void onPageSelected(int position) {
+                    Log.i("page", String.valueOf(position));
+                    if(position == 1){
+                        addNovoContato.hide();
+                    }else {
+                        addNovoContato.show();
+                    }
+                }
+
+                @Override
+                public void onPageScrollStateChanged(int state) {
+
+                }
+            });
         }
 
         tabLayout = (TabLayout) findViewById(R.id.tabsListaContatos);

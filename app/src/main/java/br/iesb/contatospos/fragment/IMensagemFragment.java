@@ -59,8 +59,9 @@ public class IMensagemFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_imensagem_list, container, false);
+        View outerView = inflater.inflate(R.layout.fragment_imensagem_list, container, false);
 
+        View view = outerView.findViewById(R.id.list);
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
