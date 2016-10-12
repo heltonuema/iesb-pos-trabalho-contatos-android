@@ -141,7 +141,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
 
         mMap = googleMap;
-        mMap.setMyLocationEnabled(true);
 
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, MAP_PERMISSION_ACCESS_COURSE_LOCATION);
@@ -149,12 +148,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             createAlarm();
             if (longitudeUsuario == 0 && latitudeUsuario == 0) {
                 location = getLocation();
-                latitudeUsuario = location.getLatitude();
-                longitudeUsuario = location.getLongitude();
-                LatLng localizacaoAtual = new LatLng(latitudeUsuario, longitudeUsuario);
-                mMap.addMarker(new MarkerOptions().position(localizacaoAtual).title("Minha ultima localizacao!"));
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(localizacaoAtual, 16.0f));
-
+                if(location != null) {
+                    latitudeUsuario = location.getLatitude();
+                    longitudeUsuario = location.getLongitude();
+                    LatLng localizacaoAtual = new LatLng(latitudeUsuario, longitudeUsuario);
+                    mMap.addMarker(new MarkerOptions().position(localizacaoAtual).title("Minha localizacao!"));
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(localizacaoAtual, 16.0f));
+                }
             } else {
 
                 LatLng usuario = new LatLng(latitudeUsuario, longitudeUsuario);
