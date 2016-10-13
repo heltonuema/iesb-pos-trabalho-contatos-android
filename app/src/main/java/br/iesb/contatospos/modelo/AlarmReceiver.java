@@ -11,6 +11,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import com.google.android.gms.maps.model.LatLng;
 
 import br.iesb.contatospos.activity.MapsActivity;
+import br.iesb.contatospos.application.ContatosPos;
 
 
 public class AlarmReceiver extends BroadcastReceiver {
@@ -27,6 +28,7 @@ public class AlarmReceiver extends BroadcastReceiver {
             Intent updateIntent = new Intent(MapsActivity.ALARM_RECEIVED_EVENT);
             updateIntent.putExtra("LOC", loc);
             LocalBroadcastManager.getInstance(context).sendBroadcast(updateIntent);
+
         }
     }
 

@@ -23,6 +23,7 @@ import br.iesb.contatospos.Manifest;
 import br.iesb.contatospos.R;
 import br.iesb.contatospos.application.ContatosPos;
 import br.iesb.contatospos.modelo.AlarmReceiver;
+import br.iesb.contatospos.modelo.Usuario;
 import br.iesb.contatospos.modelo.UsuarioLogado;
 
 import android.app.AlarmManager;
@@ -99,9 +100,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         public void onReceive(Context context, Intent intent) {
             loc = intent.getParcelableExtra("LOC");
             updateMap(loc);
+            getLocation();
 
-            latitudeUsuario = loc.latitude;
-            longitudeUsuario = loc.longitude;
+            if (location != null) {
+                ContatosPos.getUsuarioLogado(context).setUltimaLongitude(location.getLatitude());
+                ContatosPos.getUsuarioLogado(context).setUltimaLatitude(location.getLongitude());
+            }
         }
     };
 
