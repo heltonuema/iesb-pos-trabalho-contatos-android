@@ -2,6 +2,7 @@ package br.iesb.contatospos.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.renderscript.ScriptGroup;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,9 +12,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import br.iesb.contatospos.R;
+import br.iesb.contatospos.activity.CadastroContatoActivity;
+import br.iesb.contatospos.dao.ContatoDAO;
 import br.iesb.contatospos.fragment.dummy.DummyContent;
 import br.iesb.contatospos.fragment.dummy.DummyContent.DummyItem;
+import br.iesb.contatospos.modelo.IContato;
+import br.iesb.contatospos.modelo.Mensagem;
+import br.iesb.contatospos.util.InputUtils;
 
 import java.util.List;
 
@@ -30,7 +40,8 @@ public class IMensagemFragment extends Fragment {
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
-
+    private FirebaseRecyclerAdapter<Mensagem, MyIMensagemRecyclerViewAdapter.ViewHolderMsg> firebaseRecyclerAdapter;
+    private DatabaseReference firebaseDatabaseReference;
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -64,6 +75,9 @@ public class IMensagemFragment extends Fragment {
 
         View view = outerView.findViewById(R.id.list);
         // Set the adapter
+
+        firebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
@@ -72,14 +86,54 @@ public class IMensagemFragment extends Fragment {
                 LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
                 linearLayoutManager.setStackFromEnd(true);
                 recyclerView.setLayoutManager(linearLayoutManager);
+                recyclerView.setAdapter(getFirebaseAdapter(linearLayoutManager, recyclerView));
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyIMensagemRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+
+
         }
         return view;
     }
 
+    private FirebaseRecyclerAdapter<Mensagem, MyIMensagemRecyclerViewAdapter.ViewHolderMsg> getFirebaseAdapter(final LinearLayoutManager layoutManager, final RecyclerView recyclerView){
+
+        final FirebaseRecyclerAdapter<Mensagem, MyIMensagemRecyclerViewAdapter.ViewHolderMsg>retorno =
+                new FirebaseRecyclerAdapter<Mensagem, MyIMensagemRecyclerViewAdapter.ViewHolderMsg>(Mensagem.class, R.layout.fragment_mensagem_firebase,
+                MyIMensagemRecyclerViewAdapter.ViewHolderMsg.class, firebaseDatabaseReference.child("messages")) {
+            @Override
+            protected void populateViewHolder(MyIMensagemRecyclerViewAdapter.ViewHolderMsg viewHolder, Mensagem mensagem, int position) {
+
+                IContato contato = new ContatoDAO().findContatoOnRealm("email", mensagem.getName());
+                final String nomeContato = (contato != null) ? contato.getNome() : mensagem.getName();
+                final String fotoUri = (contato != null) ? contato.getUriFoto() : null;
+                viewHolder.mIdView.setText(nomeContato);
+                viewHolder.mContentView.setText(mensagem.getText());
+
+                if(InputUtils.notNullOrEmpty(fotoUri)){
+                    CadastroContatoActivity.setPic(viewHolder.usuarioImagew, contato.getUriFoto());
+                }
+            }
+        };
+
+        retorno.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver(){
+
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                super.onItemRangeInserted(positionStart, itemCount);
+                int mensagemCount = retorno.getItemCount();
+                int lastVisible = layoutManager.findLastCompletelyVisibleItemPosition();
+
+                if(lastVisible == -1 || (positionStart >= (mensagemCount - 1) &&
+                        lastVisible == (positionStart - 1))) {
+                    recyclerView.scrollToPosition(positionStart);
+                }
+            }
+        });
+
+        return retorno;
+
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -97,6 +151,8 @@ public class IMensagemFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
+
+
 
     /**
      * This interface must be implemented by activities that contain this

@@ -28,6 +28,7 @@ import com.google.gson.Gson;
 
 import br.iesb.contatospos.R;
 import br.iesb.contatospos.application.ContatosPos;
+import br.iesb.contatospos.fragment.FirebaseChatMessage;
 import br.iesb.contatospos.fragment.IContatoFragment;
 import br.iesb.contatospos.fragment.IMensagemFragment;
 import br.iesb.contatospos.fragment.ListaContatoPagerAdapter;
@@ -156,6 +157,8 @@ public class ListaContatosActivity extends AppCompatActivity implements View.OnC
                             CadastroContatoActivity.FLAG_EDITA_EMAIL |
                             CadastroContatoActivity.FLAG_SALVA_CONTATO);
                     startActivityForResult(intent, RequestCode.ANY_ACTION);
+                } else if(tabLayout.getSelectedTabPosition() == 1){
+                    new FirebaseChatMessage().show(getSupportFragmentManager(), "msg");
                 }
                 break;
         }

@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import br.iesb.contatospos.R;
@@ -18,7 +19,7 @@ import java.util.List;
  * TODO: Replace the implementation with code for your data type.
  */
 
-public class MyIMensagemRecyclerViewAdapter extends RecyclerView.Adapter<MyIMensagemRecyclerViewAdapter.ViewHolder> {
+public class MyIMensagemRecyclerViewAdapter extends RecyclerView.Adapter<MyIMensagemRecyclerViewAdapter.ViewHolderMsg> {
 
     private final List<DummyItem> mValues;
     private final OnListFragmentInteractionListener mListener;
@@ -29,14 +30,14 @@ public class MyIMensagemRecyclerViewAdapter extends RecyclerView.Adapter<MyIMens
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolderMsg onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_mensagem_firebase, parent, false);
-        return new ViewHolder(view);
+        return new ViewHolderMsg(view);
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolderMsg holder, int position) {
         holder.mItem = mValues.get(position);
         holder.mIdView.setText(mValues.get(position).id);
         holder.mContentView.setText(mValues.get(position).content);
@@ -58,22 +59,28 @@ public class MyIMensagemRecyclerViewAdapter extends RecyclerView.Adapter<MyIMens
         return mValues.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolderMsg extends RecyclerView.ViewHolder {
+
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
+        public final ImageView usuarioImagew;
         public DummyItem mItem;
 
-        public ViewHolder(View view) {
+        public ViewHolderMsg(View view) {
             super(view);
             mView = view;
             mIdView = (TextView) view.findViewById(R.id.id);
             mContentView = (TextView) view.findViewById(R.id.content);
+            usuarioImagew = (ImageView) view.findViewById(R.id.usuarioImageView);
         }
+
+
 
         @Override
         public String toString() {
             return super.toString() + " '" + mContentView.getText() + "'";
         }
     }
+
 }
