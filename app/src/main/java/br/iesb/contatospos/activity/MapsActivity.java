@@ -9,6 +9,8 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
+
+import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -16,17 +18,20 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
 import br.iesb.contatospos.Manifest;
 import br.iesb.contatospos.R;
 import br.iesb.contatospos.application.ContatosPos;
 import br.iesb.contatospos.modelo.AlarmReceiver;
 import br.iesb.contatospos.modelo.UsuarioLogado;
+
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.view.View;
 import android.widget.Toast;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -38,8 +43,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private double longitudeUsuario;
     private LatLng loc;
     private Location location;
-
+    private LocationManager locationManager;
     private GoogleMap mMap;
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == RequestCode.PERMISSAO_LOCALIZACAO && resultCode == RESULT_OK) {
+            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) !=
+                    PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission
+                    (this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
+            mMap.setMyLocationEnabled(true);
+            onMapReady(mMap);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +106,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     };
 
 
-
     private void createAlarm() {
         int seconds = 120;
         Intent intent = new Intent(this, AlarmReceiver.class);
@@ -105,37 +129,38 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
                 break;
             }
-            case RequestCode.PERMISSAO_LOCALIZACAO:{
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+            case RequestCode.PERMISSAO_LOCALIZACAO: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     getLocation();
                 }
             }
         }
     }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
         mMap = googleMap;
 
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
-            ActivityCompat.requestPermissions( this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, MAP_PERMISSION_ACCESS_COURSE_LOCATION);
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, MAP_PERMISSION_ACCESS_COURSE_LOCATION);
         } else {
             createAlarm();
-        }
+            if (longitudeUsuario == 0 && latitudeUsuario == 0) {
+                location = getLocation();
+                if(location != null) {
+                    latitudeUsuario = location.getLatitude();
+                    longitudeUsuario = location.getLongitude();
+                    LatLng localizacaoAtual = new LatLng(latitudeUsuario, longitudeUsuario);
+                    mMap.addMarker(new MarkerOptions().position(localizacaoAtual).title("Minha localizacao!"));
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(localizacaoAtual, 16.0f));
+                }
+            } else {
 
-        if(longitudeUsuario == 0 && latitudeUsuario == 0){
-            getLocation();
-            latitudeUsuario =  location.getLatitude();
-            longitudeUsuario = location.getLongitude();
-            LatLng localizacaoAtual = new LatLng(latitudeUsuario, longitudeUsuario);
-            mMap.addMarker(new MarkerOptions().position(localizacaoAtual).title("Minha ultima localizacao!"));
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(localizacaoAtual, 16.0f));
-
-        }else{
-
-            LatLng usuario = new LatLng(latitudeUsuario, longitudeUsuario);
-            mMap.addMarker(new MarkerOptions().position(usuario).title("Minha ultima localizacao!"));
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(usuario, 16.0f));
+                LatLng usuario = new LatLng(latitudeUsuario, longitudeUsuario);
+                mMap.addMarker(new MarkerOptions().position(usuario).title("Minha ultima localizacao!"));
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(usuario, 16.0f));
+            }
         }
 
     }
@@ -150,6 +175,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public Location getLocation() {
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -163,13 +189,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             // for ActivityCompat#requestPermissions for more details.
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     RequestCode.PERMISSAO_LOCALIZACAO);
-
+            mMap.setMyLocationEnabled(true);
         }
-        location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        return location;
+        return locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
     }
-
-
 }
-
-
