@@ -122,6 +122,11 @@ public class ContatosPos extends Application implements GoogleApiClient.OnConnec
 
     }
 
+    @Override
+    public void onTerminate() {
+        new UsuarioDAO().incluiOuAltera(usuarioLogado, new ContatoDAO().findContatoOnRealm("email", usuarioLogado.getEmailUsuario()));
+    }
+
     private static void cadastrarUsuarioFirebase(final FirebaseUser firebaseUser, final Context context) throws IOException {
         final Usuario usuarioCadastrado = new UsuarioDAO().findUsuarioOnRealm("facebookId", firebaseUser.getUid());
 
